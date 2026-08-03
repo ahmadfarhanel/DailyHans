@@ -8,10 +8,11 @@ import Income from './components/Income'
 import Chores from './components/Chores'
 import Shopping from './components/Shopping'
 import Bills from './components/Bills'
+import Plans from './components/Plans'
 import Notifications, { AlertBanner } from './components/Notifications'
 import Profile from './components/Profile'
 
-type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills'
+type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills' | 'plans'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
@@ -20,6 +21,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'chores', label: 'Tugas', icon: '✅' },
   { id: 'shopping', label: 'Belanja', icon: '🛒' },
   { id: 'bills', label: 'Tagihan', icon: '📋' },
+  { id: 'plans', label: 'Rencana', icon: '🗺️' },
 ]
 
 function Login() {
@@ -213,6 +215,7 @@ export default function App() {
           {tab === 'chores' && <Chores />}
           {tab === 'shopping' && <Shopping />}
           {tab === 'bills' && <Bills />}
+          {tab === 'plans' && <Plans />}
         </div>
       </main>
 

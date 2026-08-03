@@ -50,7 +50,7 @@ export default function Bills() {
     <Card title="Tagihan" icon="📋" className="mb-6">
       <div className="mb-5 rounded-xl bg-gradient-to-r from-red-50 to-red-100/50 border border-red-200 p-4">
         <p className="text-xs font-medium text-red-600">Belum Dibayar</p>
-        <p className="mt-1 text-xl font-bold text-red-500">{fmt(unpaidTotal)}</p>
+        <p className="mt-1 font-bold text-red-500 overflow-hidden" style={{ fontSize: 'clamp(11px, 3.8vw, 20px)', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{fmt(unpaidTotal)}</p>
         <p className="text-[10px] text-red-400">{items.filter(i => !i.paid).length} tagihan tertunda</p>
       </div>
 
@@ -106,23 +106,21 @@ export default function Bills() {
           const overdue = !i.paid && new Date(i.due_date) < new Date()
           return (
             <div key={i.id} className={`rounded-xl border px-4 py-3 transition hover:bg-cream-dark ${overdue ? 'border-red-200 bg-red-50' : 'border-forest/8 bg-white'}`}>
-              <div className="flex items-center justify-between">
+              <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <input type="checkbox" checked={i.paid} onChange={() => { toggleBill(i.id, !i.paid); setItems(items.map(x => x.id === i.id ? { ...x, paid: !x.paid } : x)) }}
-                      className="h-4 w-4 rounded accent-forest" />
+                      className="h-4 w-4 rounded accent-forest shrink-0" />
                     <p className={`text-sm font-medium truncate ${i.paid ? 'text-forest/40 line-through' : 'text-forest'}`}>{i.name}</p>
                   </div>
-                  <div className="mt-1 flex items-center gap-2">
+                  <div className="mt-1.5 ml-6 flex flex-wrap items-center gap-x-2 gap-y-1">
                     <Badge variant={overdue ? 'danger' : i.paid ? 'success' : 'default'}>{i.recurring}</Badge>
                     <span className="text-[10px] text-forest/35">{i.due_date}</span>
                     {(i as any).added_by && <span className="text-[10px] text-forest/30">oleh {(i as any).added_by}</span>}
+                    <span className={`text-sm font-bold ${i.paid ? 'text-emerald-500 line-through' : 'text-forest'}`}>{fmt(i.amount)}</span>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 shrink-0 ml-3">
-                  <span className={`font-semibold whitespace-nowrap ${i.paid ? 'text-emerald-500 line-through' : 'text-forest'}`}>{fmt(i.amount)}</span>
-                  <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)}>🗑️</Button>
-                </div>
+                <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)} className="shrink-0 mt-0.5">🗑️</Button>
               </div>
             </div>
           )

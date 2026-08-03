@@ -22,7 +22,7 @@ export default function Chores() {
 
   const doAdd = async () => {
     if (!confirmAdd) return
-    const created = await addChore({ ...confirmAdd, done: false } as any)
+    const created = await addChore({ ...confirmAdd })
     if (created) setItems([created, ...items])
     setConfirmAdd(null); reset(); setShowForm(false)
   }
