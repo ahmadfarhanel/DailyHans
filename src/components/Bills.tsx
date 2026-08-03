@@ -114,7 +114,7 @@ export default function Bills() {
                     <p className={`text-sm font-medium truncate ${i.paid ? 'text-forest/40 line-through' : 'text-forest'}`}>{i.name}</p>
                   </div>
                   <div className="mt-1 flex items-center gap-2">
-                    <Badge variant={overdue ? 'red' : i.paid ? 'emerald' : 'default'}>{i.recurring}</Badge>
+                    <Badge variant={overdue ? 'danger' : i.paid ? 'success' : 'default'}>{i.recurring}</Badge>
                     <span className="text-[10px] text-forest/35">{i.due_date}</span>
                     {(i as any).added_by && <span className="text-[10px] text-forest/30">oleh {(i as any).added_by}</span>}
                   </div>
