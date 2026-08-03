@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Card, Input, Button, useForm, Badge, EmptyState } from './ui'
+import ConfirmDialog from './ConfirmDialog'
+import { jakartaToday } from '../lib/date'
 
 type Income = { id: string; amount: number; source: string; description: string; date: string; added_by: string }
 
@@ -11,29 +13,46 @@ const fmt = (n: number) => n.toLocaleString('id-ID', { style: 'currency', curren
 export default function IncomeTab() {
   const [items, setItems] = useState<Income[]>([])
   const [showForm, setShowForm] = useState(false)
-  const { values, setValues, set, reset } = useForm({ amount: '', source: 'gaji', description: '', added_by: '' })
+  const { values, setValues, set, reset } = useForm({ amount: '', source: 'gaji', description: '', added_by: '', date: jakartaToday() })
+
+  const [confirmAdd, setConfirmAdd] = useState<{ amount: number; source: string; description: string; added_by: string; date: string } | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<Income | null>(null)
 
   useEffect(() => {
     supabase.from('income').select('*').order('date', { ascending: false }).then(({ data }) => setItems((data || []) as Income[]))
   }, [])
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!values.amount) return
-    const { data } = await supabase.from('income').insert({
+    setConfirmAdd({
       amount: +values.amount,
       source: values.source,
       description: values.description,
-      added_by: values.added_by || null,
-      date: new Date().toISOString().slice(0, 10),
+      added_by: values.added_by,
+      date: values.date,
+    })
+  }
+
+  const confirmAddIncome = async () => {
+    if (!confirmAdd) return
+    const { data } = await supabase.from('income').insert({
+      amount: confirmAdd.amount,
+      source: confirmAdd.source,
+      description: confirmAdd.description,
+      added_by: confirmAdd.added_by || null,
+      date: confirmAdd.date,
     }).select().single()
     if (data) setItems([data as Income, ...items])
+    setConfirmAdd(null)
     reset(); setShowForm(false)
   }
 
-  const del = async (id: string) => {
-    await supabase.from('income').delete().eq('id', id)
-    setItems(items.filter(x => x.id !== id))
+  const confirmDeleteIncome = async () => {
+    if (!confirmDelete) return
+    await supabase.from('income').delete().eq('id', confirmDelete.id)
+    setItems(items.filter(x => x.id !== confirmDelete.id))
+    setConfirmDelete(null)
   }
 
   const total = items.reduce((s, i) => s + i.amount, 0)
@@ -61,14 +80,21 @@ export default function IncomeTab() {
             </label>
           </div>
           <Input label="Deskripsi" placeholder="Gaji bulan Agustus" value={values.description} onChange={set('description')} />
-          <label className="block">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
-            <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
-              className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
-              <option value="">— pilih —</option>
-              {MEMBERS.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
-          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Tanggal</span>
+              <input type="date" value={values.date} onChange={e => setValues({ ...values, date: e.target.value })}
+                className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10" />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
+              <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
+                className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
+                <option value="">— pilih —</option>
+                {MEMBERS.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </label>
+          </div>
           <div className="flex gap-2">
             <Button type="submit" size="lg" className="flex-1">Simpan</Button>
             <Button type="button" variant="ghost" onClick={() => { setShowForm(false); reset() }}>Batal</Button>
@@ -86,16 +112,39 @@ export default function IncomeTab() {
               <div className="flex items-center gap-2 mt-0.5">
                 <Badge variant="success">{i.source}</Badge>
                 {i.added_by && <span className="text-[10px] text-forest/35 shrink-0">oleh {i.added_by}</span>}
+                <span className="text-[10px] text-forest/30">{i.date}</span>
               </div>
             </div>
             <div className="flex items-center gap-3 shrink-0 ml-3">
               <span className="font-semibold text-emerald-600 whitespace-nowrap">+{fmt(i.amount)}</span>
-              <Button variant="danger" size="sm" onClick={() => del(i.id)}>✕</Button>
+              <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)}>🗑️</Button>
             </div>
           </div>
         ))}
         {items.length === 0 && <EmptyState icon="📈" message="Belum ada pemasukan" />}
       </div>
+
+      {/* Confirm Add */}
+      <ConfirmDialog
+        open={!!confirmAdd}
+        title="Konfirmasi Tambah Pemasukan"
+        message={`Sumber: ${confirmAdd?.source}\nJumlah: ${fmt(confirmAdd?.amount || 0)}\nDeskripsi: ${confirmAdd?.description || '-'}\nTanggal: ${confirmAdd?.date}\nDitambahkan oleh: ${confirmAdd?.added_by || '-'}`}
+        confirmLabel="Ya, Tambah"
+        variant="info"
+        onConfirm={confirmAddIncome}
+        onCancel={() => setConfirmAdd(null)}
+      />
+
+      {/* Confirm Delete */}
+      <ConfirmDialog
+        open={!!confirmDelete}
+        title="Konfirmasi Hapus"
+        message={`Hapus pemasukan "${confirmDelete?.description || confirmDelete?.source}" sebesar ${fmt(confirmDelete?.amount || 0)}?`}
+        confirmLabel="Ya, Hapus"
+        variant="danger"
+        onConfirm={confirmDeleteIncome}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </Card>
   )
 }

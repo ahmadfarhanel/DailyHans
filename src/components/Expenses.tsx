@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getExpenses, addExpense, deleteExpense, type Expense } from '../lib/db'
 import { Card, Input, Button, useForm, Badge, EmptyState } from './ui'
+import ConfirmDialog from './ConfirmDialog'
+import { jakartaToday } from '../lib/date'
 
 const CATS = [
   { id: 'makanan', icon: '🍜', color: 'warning' },
@@ -20,22 +22,45 @@ const fmt = (n: number) => n.toLocaleString('id-ID', { style: 'currency', curren
 export default function Expenses() {
   const [items, setItems] = useState<Expense[]>([])
   const [showForm, setShowForm] = useState(false)
-  const { values, setValues, set, reset } = useForm({ amount: '', category: 'makanan', description: '', added_by: '' })
+  const { values, setValues, set, reset } = useForm({ amount: '', category: 'makanan', description: '', added_by: '', date: jakartaToday() })
+
+  // Confirmation state
+  const [confirmAdd, setConfirmAdd] = useState<{ amount: number; category: string; description: string; added_by: string; date: string } | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState<Expense | null>(null)
 
   useEffect(() => { getExpenses().then(setItems) }, [])
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!values.amount) return
-    const created = await addExpense({
+    setConfirmAdd({
       amount: +values.amount,
       category: values.category,
       description: values.description,
-      date: new Date().toISOString().slice(0, 10),
-      added_by: values.added_by || undefined,
+      added_by: values.added_by,
+      date: values.date,
+    })
+  }
+
+  const confirmAddExpense = async () => {
+    if (!confirmAdd) return
+    const created = await addExpense({
+      amount: confirmAdd.amount,
+      category: confirmAdd.category,
+      description: confirmAdd.description,
+      date: confirmAdd.date,
+      added_by: confirmAdd.added_by || undefined,
     } as any)
     if (created) setItems([created, ...items])
+    setConfirmAdd(null)
     reset(); setShowForm(false)
+  }
+
+  const confirmDeleteExpense = async () => {
+    if (!confirmDelete) return
+    await deleteExpense(confirmDelete.id)
+    setItems(items.filter(x => x.id !== confirmDelete.id))
+    setConfirmDelete(null)
   }
 
   const total = items.reduce((s, i) => s + i.amount, 0)
@@ -64,14 +89,21 @@ export default function Expenses() {
             </label>
           </div>
           <Input label="Deskripsi" placeholder="Beli sayur di pasar" value={values.description} onChange={set('description')} />
-          <label className="block">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
-            <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
-              className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
-              <option value="">— pilih —</option>
-              {MEMBERS.map(m => <option key={m} value={m}>{m}</option>)}
-            </select>
-          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Tanggal</span>
+              <input type="date" value={values.date} onChange={e => setValues({ ...values, date: e.target.value })}
+                className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10" />
+            </label>
+            <label className="block">
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
+              <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
+                className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
+                <option value="">— pilih —</option>
+                {MEMBERS.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+            </label>
+          </div>
           <div className="flex gap-2">
             <Button type="submit" size="lg" className="flex-1">Simpan</Button>
             <Button type="button" variant="ghost" onClick={() => { setShowForm(false); reset() }}>Batal</Button>
@@ -93,18 +125,41 @@ export default function Expenses() {
                   <div className="flex items-center gap-2 mt-0.5">
                     <Badge variant={cat.color as any}>{i.category}</Badge>
                     {(i as any).added_by && <span className="text-[10px] text-forest/35 shrink-0">oleh {(i as any).added_by}</span>}
+                    <span className="text-[10px] text-forest/30">{i.date}</span>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-3 shrink-0 ml-3">
                 <span className="font-semibold text-forest whitespace-nowrap">{fmt(i.amount)}</span>
-                <Button variant="danger" size="sm" onClick={() => deleteExpense(i.id).then(() => setItems(items.filter(x => x.id !== i.id)))}>✕</Button>
+                <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)}>🗑️</Button>
               </div>
             </div>
           )
         })}
         {items.length === 0 && <EmptyState icon="💸" message="Belum ada pengeluaran" />}
       </div>
+
+      {/* Confirm Add Dialog */}
+      <ConfirmDialog
+        open={!!confirmAdd}
+        title="Konfirmasi Tambah Pengeluaran"
+        message={`Kategori: ${confirmAdd?.category}\nJumlah: ${fmt(confirmAdd?.amount || 0)}\nDeskripsi: ${confirmAdd?.description || '-'}\nTanggal: ${confirmAdd?.date}\nDitambahkan oleh: ${confirmAdd?.added_by || '-'}`}
+        confirmLabel="Ya, Tambah"
+        variant="info"
+        onConfirm={confirmAddExpense}
+        onCancel={() => setConfirmAdd(null)}
+      />
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialog
+        open={!!confirmDelete}
+        title="Konfirmasi Hapus"
+        message={`Hapus pengeluaran "${confirmDelete?.description || confirmDelete?.category}" sebesar ${fmt(confirmDelete?.amount || 0)}?`}
+        confirmLabel="Ya, Hapus"
+        variant="danger"
+        onConfirm={confirmDeleteExpense}
+        onCancel={() => setConfirmDelete(null)}
+      />
     </Card>
   )
 }
