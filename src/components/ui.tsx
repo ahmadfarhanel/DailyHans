@@ -24,9 +24,9 @@ export function Button({ variant = 'primary', size = 'md', className = '', ...pr
   return <button {...props} className={`rounded-lg font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`} />
 }
 
-export function Card({ title, icon, children, className = '' }: { title: string; icon?: string; children: React.ReactNode; className?: string }) {
+export function Card({ title, icon, children, className = '', onClick }: { title: string; icon?: string; children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent) => void }) {
   return (
-    <section className={`rounded-2xl border border-forest/10 bg-white/90 backdrop-blur-sm shadow-lg shadow-forest/5 overflow-hidden ${className}`}>
+    <section onClick={onClick} className={`rounded-2xl border border-forest/10 bg-white/90 backdrop-blur-sm shadow-lg shadow-forest/5 overflow-hidden ${className}`}>
       <div className="flex items-center gap-2.5 border-b border-forest/10 bg-gradient-to-r from-forest/[0.03] to-forest-light/[0.02] px-5 py-4">
         {icon && <span className="text-lg">{icon}</span>}
         <h2 className="text-base font-semibold text-forest">{title}</h2>
