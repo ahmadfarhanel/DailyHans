@@ -1,119 +1,171 @@
-export default function App() {
+import { useState } from 'react'
+import { supabase } from './lib/supabase'
+import { useAuth } from './lib/useAuth'
+import Expenses from './components/Expenses'
+import Chores from './components/Chores'
+import Shopping from './components/Shopping'
+import Bills from './components/Bills'
+
+type Tab = 'expenses' | 'chores' | 'shopping' | 'bills'
+
+const TABS: { id: Tab; label: string; icon: string; gradient: string }[] = [
+  { id: 'expenses', label: 'Pengeluaran', icon: '💰', gradient: 'from-amber-500/20' },
+  { id: 'chores', label: 'Tugas', icon: '✓', gradient: 'from-sky-500/20' },
+  { id: 'shopping', label: 'Belanja', icon: '🛒', gradient: 'from-violet-500/20' },
+  { id: 'bills', label: 'Tagihan', icon: '📋', gradient: 'from-rose-500/20' },
+]
+
+function Login() {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [mode, setMode] = useState<'login' | 'signup'>('login')
+  const [err, setErr] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setErr('')
+    setLoading(true)
+    const { error } = mode === 'login'
+      ? await supabase.auth.signInWithPassword({ email, password })
+      : await supabase.auth.signUp({ email, password })
+    if (error) setErr(error.message)
+    setLoading(false)
+  }
+
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      {/* Nav */}
-      <header className="fixed top-0 inset-x-0 z-50 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-lg font-bold tracking-tight">Daily<span className="text-emerald-400">Hans</span></span>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 px-6">
+      {/* Background glow */}
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[600px] -translate-x-1/2 rounded-full bg-emerald-500/15 blur-[120px]" />
+      <div className="pointer-events-none absolute -bottom-32 right-0 h-[400px] w-[400px] rounded-full bg-violet-500/10 blur-[100px]" />
+
+      <div className="relative z-10 w-full max-w-md">
+        {/* Logo */}
+        <div className="mb-8 text-center">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/25">
+            <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-4 0h4" />
+            </svg>
           </div>
-          <nav className="hidden md:flex items-center gap-8 text-sm text-zinc-400">
-            <a href="#stack" className="hover:text-zinc-100 transition">Stack</a>
-            <a href="#flow" className="hover:text-zinc-100 transition">Flow</a>
-            <a href="#roadmap" className="hover:text-zinc-100 transition">Roadmap</a>
-          </nav>
-          <a href="#roadmap" className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 transition">
-            Get Started
-          </a>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Daily<span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">Hans</span>
+          </h1>
+          <p className="mt-2 text-sm text-zinc-500">Monitoring rumah tangga yang simpel</p>
+        </div>
+
+        {/* Card */}
+        <form onSubmit={submit} className="rounded-2xl border border-zinc-800/60 bg-zinc-900/70 p-7 backdrop-blur-xl shadow-2xl shadow-black/20">
+          {/* Mode toggle */}
+          <div className="mb-5 flex rounded-lg bg-zinc-800/50 p-1">
+            {(['login', 'signup'] as const).map(m => (
+              <button key={m} type="button" onClick={() => { setMode(m); setErr('') }}
+                className={`flex-1 rounded-md py-2 text-xs font-semibold transition ${mode === m ? 'bg-zinc-700 text-zinc-100 shadow' : 'text-zinc-400 hover:text-zinc-200'}`}>
+                {m === 'login' ? 'Masuk' : 'Daftar'}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-3.5">
+            <label className="block group">
+              <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-zinc-500">Email</span>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
+                placeholder="nama@email.com"
+                className="w-full rounded-xl border border-zinc-800 bg-zinc-800/50 px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-emerald-500/50 focus:bg-zinc-800 focus:ring-2 focus:ring-emerald-500/10" />
+            </label>
+
+            <label className="block">
+              <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-zinc-500">Password</span>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
+                placeholder="Minimal 6 karakter"
+                className="w-full rounded-xl border border-zinc-800 bg-zinc-800/50 px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-emerald-500/50 focus:bg-zinc-800 focus:ring-2 focus:ring-emerald-500/10" />
+            </label>
+          </div>
+
+          {err && (
+            <div className="mt-4 flex items-start gap-2 rounded-lg bg-red-500/10 px-3 py-2.5 text-xs text-red-300">
+              <svg className="mt-0.5 h-4 w-4 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/></svg>
+              {err}
+            </div>
+          )}
+
+          <button type="submit" disabled={loading}
+            className="mt-5 w-full rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 py-3 text-sm font-bold text-white shadow-lg shadow-emerald-500/25 transition hover:shadow-emerald-500/40 active:scale-[0.98] disabled:opacity-50 disabled:active:scale-100">
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" strokeWidth="3" opacity=".25"/><path d="M4 12a8 8 0 018-8" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
+                Memproses...
+              </span>
+            ) : mode === 'login' ? 'Masuk ke Dashboard' : 'Buat Akun Baru'}
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-xs text-zinc-600">
+          Dibuat dengan ❤️ untuk keluarga Indonesia
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default function App() {
+  const { session, loading } = useAuth()
+  const [tab, setTab] = useState<Tab>('expenses')
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-zinc-700 border-t-emerald-500" />
+          <span className="text-sm text-zinc-500">Memuat...</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (!session) return <Login />
+
+  const activeTab = TABS.find(t => t.id === tab)!
+
+  return (
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/90 backdrop-blur-xl">
+        <div className="mx-auto max-w-3xl px-4 h-14 flex items-center justify-between">
+          <h1 className="text-base font-bold tracking-tight">Daily<span className="text-emerald-400">Hans</span></h1>
+          <div className="flex items-center gap-2">
+            <span className="hidden text-xs text-zinc-500 sm:inline">{session.user.email}</span>
+            <button onClick={() => supabase.auth.signOut()}
+              className="rounded-lg border border-zinc-800 px-3 py-1.5 text-[11px] font-medium text-zinc-400 transition hover:border-red-500/30 hover:text-red-400">
+              Keluar
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <main className="relative overflow-hidden pt-32 pb-20">
-        <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-96 w-[600px] rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="relative mx-auto max-w-6xl px-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1.5 text-xs text-emerald-300">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            Vibecoding Automation System
-          </div>
-          <h1 className="mt-6 text-4xl font-bold tracking-tight sm:text-6xl">
-            Your Daily<span className="text-emerald-400"> AI</span> Workflow
-          </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-zinc-400">
-            Natural language prompt → Hermes → 9Router → AI provider → generate code → deploy. Semua happend otomatis.
-          </p>
-          <div className="mt-8 flex justify-center gap-4">
-            <a href="#flow" className="rounded-lg bg-emerald-500 px-6 py-3 text-sm font-semibold text-zinc-950 hover:bg-emerald-400 transition">Lihat Flow</a>
-            <a href="#stack" className="rounded-lg border border-zinc-700 px-6 py-3 text-sm font-semibold text-zinc-200 hover:border-zinc-500 transition">Tech Stack</a>
-          </div>
-        </div>
+      {/* Content with tab gradient accent */}
+      <main className={`mx-auto max-w-3xl px-4 pt-6 pb-24 bg-gradient-to-b ${activeTab.gradient} to-transparent`}>
+        {tab === 'expenses' && <Expenses />}
+        {tab === 'chores' && <Chores />}
+        {tab === 'shopping' && <Shopping />}
+        {tab === 'bills' && <Bills />}
       </main>
 
-      {/* Stats */}
-      <section className="border-y border-zinc-800/60 bg-zinc-900/40">
-        <div className="mx-auto max-w-6xl px-6 py-10 grid grid-cols-2 gap-6 md:grid-cols-4">
-          {[
-            ['60+', 'AI Providers'],
-            ['3', 'Tier Fallback'],
-            ['24/7', 'Pipeline'],
-            ['0', 'Manual Steps'],
-          ].map(([n, l]) => (
-            <div key={l} className="text-center">
-              <div className="text-3xl font-bold text-emerald-400">{n}</div>
-              <div className="mt-1 text-sm text-zinc-400">{l}</div>
-            </div>
-          ))}
+      {/* Bottom Nav */}
+      <nav className="fixed bottom-0 inset-x-0 z-50 border-t border-zinc-800/60 bg-zinc-950/95 backdrop-blur-xl">
+        <div className="mx-auto max-w-3xl flex">
+          {TABS.map(t => {
+            const active = tab === t.id
+            return (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                className={`relative flex-1 py-3 flex flex-col items-center gap-0.5 text-[11px] font-medium transition ${active ? 'text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'}`}>
+                <span className="text-base leading-none">{t.icon}</span>
+                {t.label}
+                {active && <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-emerald-400" />}
+              </button>
+            )
+          })}
         </div>
-      </section>
-
-      {/* Stack */}
-      <section id="stack" className="mx-auto max-w-6xl px-6 py-20">
-        <h2 className="text-2xl font-bold text-center">Tech Stack</h2>
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            ['Hermes Agent', 'Orchestrator — skills, cron, memory, delegate', 'emerald'],
-            ['9Router', 'AI gateway — 60+ providers, 3-tier routing', 'sky'],
-            ['Supabase', 'Postgres + Auth + Storage backend', 'violet'],
-            ['Vite + React', 'Frontend, fast HMR', 'cyan'],
-            ['Obsidian', 'Knowledge base, prompt templates', 'amber'],
-            ['Vercel', 'Deploy dari git push', 'zinc'],
-          ].map(([name, desc, color]) => (
-            <div key={name} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5 hover:border-zinc-700 transition">
-              <div className={`h-2 w-2 rounded-full bg-${color}-400 mb-3`} />
-              <h3 className="font-semibold">{name}</h3>
-              <p className="mt-1 text-sm text-zinc-400">{desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Flow */}
-      <section id="flow" className="border-t border-zinc-800/60 bg-zinc-900/40">
-        <div className="mx-auto max-w-4xl px-6 py-20">
-          <h2 className="text-2xl font-bold text-center">Pipeline Flow</h2>
-          <div className="mt-10 space-y-0">
-            {['Developer prompt', 'Hermes Agent', '9Router (3-tier)', 'AI Provider', 'Generate code', 'Git push', 'Vercel deploy'].map((s, i) => (
-              <div key={s} className="flex items-center gap-4">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/20 text-sm font-bold text-emerald-400">{i + 1}</div>
-                <div className="flex-1 rounded-lg border border-zinc-800 bg-zinc-900/50 px-4 py-3 font-medium">{s}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Roadmap */}
-      <section id="roadmap" className="mx-auto max-w-6xl px-6 py-20">
-        <h2 className="text-2xl font-bold text-center">Roadmap</h2>
-        <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-3">
-          {[
-            ['Fase 1 · Foundation', 'Project setup, Supabase, 9Router, GitHub', '✓ Done'],
-            ['Fase 2 · AI Pipeline', 'v0.dev, Claude Code, Hermes orchestration', 'In progress'],
-            ['Fase 3 · Automation', 'Cron jobs, feedback loop, deploy pipeline', 'Next'],
-          ].map(([phase, desc, status]) => (
-            <div key={phase} className="rounded-xl border border-zinc-800 bg-zinc-900/50 p-5">
-              <h3 className="font-semibold">{phase}</h3>
-              <p className="mt-1 text-sm text-zinc-400">{desc}</p>
-              <span className={`mt-3 inline-block rounded-full px-3 py-1 text-xs ${status === '✓ Done' ? 'bg-emerald-500/15 text-emerald-300' : status === 'In progress' ? 'bg-sky-500/15 text-sky-300' : 'bg-zinc-700/50 text-zinc-300'}`}>{status}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-zinc-800/60 py-8 text-center text-sm text-zinc-500">
-        Daily<span className="text-emerald-400">Hans</span> · Vibecoding Automation
-      </footer>
+      </nav>
     </div>
   )
 }
