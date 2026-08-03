@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../lib/supabase'
-import { Input, Button } from './ui'
 
 export default function Profile({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState('')

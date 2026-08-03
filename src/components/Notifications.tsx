@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { getBillAlerts, type BillAlert } from '../lib/notifications'
-import { Card, Badge } from './ui'
+import { useState } from 'react'
+import type { BillAlert } from '../lib/notifications'
+import { Badge } from './ui'
 
 type Props = { alerts: BillAlert[] }
 

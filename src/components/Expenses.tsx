@@ -32,9 +32,8 @@ export default function Expenses() {
       category: values.category,
       description: values.description,
       date: new Date().toISOString().slice(0, 10),
-      // @ts-expect-error added_by field
       added_by: values.added_by || undefined,
-    })
+    } as any)
     if (created) setItems([created, ...items])
     reset(); setShowForm(false)
   }
@@ -93,7 +92,6 @@ export default function Expenses() {
                   <p className="text-sm font-medium text-forest truncate">{i.description || i.category}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     <Badge variant={cat.color as any}>{i.category}</Badge>
-                    {/* @ts-expect-error added_by */}
                     {(i as any).added_by && <span className="text-[10px] text-forest/35 shrink-0">oleh {(i as any).added_by}</span>}
                   </div>
                 </div>

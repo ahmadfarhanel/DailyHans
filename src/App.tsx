@@ -161,7 +161,7 @@ export default function App() {
           })}
         </nav>
 
-        <div className="border-t border-forest/8 p-3">
+        <div className="border-t border-forest/8 bg-cream p-3">
           <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
             <button onClick={() => setShowProfile(true)} className="flex items-center gap-2">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-forest to-forest-light text-[10px] font-bold text-cream">
