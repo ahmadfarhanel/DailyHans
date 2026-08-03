@@ -135,7 +135,7 @@ export default function App() {
   return (
     <div className="flex min-h-screen bg-cream-dark text-forest font-sans">
       {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-20 flex-col border-r border-forest/8 bg-cream md:w-56">
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-20 flex-col border-r border-forest/8 bg-cream overflow-hidden md:w-56">
         <div className="flex items-center gap-2 border-b border-forest/8 px-4 py-5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-forest to-forest-light shadow-lg shadow-forest/20">
             <svg className="h-5 w-5 text-cream" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
