@@ -133,16 +133,36 @@ export default function App() {
   if (!session) return <Login />
 
   return (
-    <div className="flex min-h-screen bg-cream-dark text-forest font-sans">
-      {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-40 flex w-20 flex-col border-r border-forest/8 bg-cream overflow-hidden md:w-56">
+    <div className="min-h-screen bg-cream-dark text-forest font-sans">
+
+      {/* ── MOBILE HEADER (hidden on md+) ── */}
+      <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between border-b border-forest/8 bg-cream px-4 py-3 md:hidden">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-forest to-forest-light shadow shadow-forest/20">
+            <svg className="h-4 w-4 text-cream" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-4 0h4" />
+            </svg>
+          </div>
+          <span className="text-base font-bold">Daily<span className="text-gold">KaoAyy</span></span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Notifications alerts={alerts} />
+          <button onClick={() => setShowProfile(true)}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-forest to-forest-light text-xs font-bold text-cream shadow shadow-forest/20">
+            {session.user.email?.charAt(0).toUpperCase()}
+          </button>
+        </div>
+      </header>
+
+      {/* ── DESKTOP SIDEBAR (hidden on mobile) ── */}
+      <aside className="fixed inset-y-0 left-0 z-40 hidden md:flex w-56 flex-col border-r border-forest/8 bg-cream overflow-hidden">
         <div className="flex items-center gap-2 border-b border-forest/8 px-4 py-5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-forest to-forest-light shadow-lg shadow-forest/20">
             <svg className="h-5 w-5 text-cream" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-4 0h4" />
             </svg>
           </div>
-          <span className="hidden text-base font-bold md:block">Daily<span className="text-gold">KaoAyy</span></span>
+          <span className="text-base font-bold">Daily<span className="text-gold">KaoAyy</span></span>
           <div className="ml-auto">
             <Notifications alerts={alerts} />
           </div>
@@ -155,24 +175,23 @@ export default function App() {
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${active ? 'bg-forest/10 text-forest' : 'text-forest/50 hover:bg-forest/5 hover:text-forest'}`}>
                 <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base transition ${active ? 'bg-forest/12' : 'bg-forest/5'}`}>{t.icon}</span>
-                <span className="hidden md:block">{t.label}</span>
+                <span>{t.label}</span>
               </button>
             )
           })}
         </nav>
 
-        {/* Footer */}
         <div className="mt-auto border-t border-forest/8 bg-cream p-3">
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-forest to-forest-light text-sm font-bold text-cream">
                 {session.user.email?.charAt(0).toUpperCase()}
               </div>
-              <div className="min-w-0 hidden md:block">
+              <div className="min-w-0">
                 <p className="truncate text-xs text-forest">{session.user.email}</p>
               </div>
             </div>
-            <div className="flex gap-2 hidden md:flex">
+            <div className="flex gap-2">
               <button onClick={() => setShowProfile(true)} className="flex-1 rounded-lg bg-forest/5 px-3 py-1.5 text-xs font-medium text-forest hover:bg-forest/10 transition">
                 ⚙️ Profil
               </button>
@@ -184,7 +203,8 @@ export default function App() {
         </div>
       </aside>
 
-      <main className="flex-1 pl-20 md:pl-56">
+      {/* ── MAIN CONTENT ── */}
+      <main className="md:pl-56 pt-[57px] pb-20 md:pt-0 md:pb-0">
         <div className="mx-auto max-w-3xl px-4 py-6">
           <AlertBanner alerts={alerts} />
           {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
@@ -195,6 +215,22 @@ export default function App() {
           {tab === 'bills' && <Bills />}
         </div>
       </main>
+
+      {/* ── MOBILE BOTTOM NAV (hidden on md+) ── */}
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-forest/8 bg-cream md:hidden">
+        {TABS.map(t => {
+          const active = tab === t.id
+          return (
+            <button key={t.id} onClick={() => setTab(t.id)}
+              className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-all ${active ? 'text-forest' : 'text-forest/40'}`}>
+              <span className={`flex h-8 w-8 items-center justify-center rounded-xl text-lg transition-all ${active ? 'bg-forest/10 scale-110' : ''}`}>
+                {t.icon}
+              </span>
+              <span className="leading-none">{t.label}</span>
+            </button>
+          )
+        })}
+      </nav>
 
       {showProfile && <Profile onClose={() => setShowProfile(false)} />}
     </div>
