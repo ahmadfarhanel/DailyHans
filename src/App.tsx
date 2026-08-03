@@ -8,11 +8,11 @@ import Bills from './components/Bills'
 
 type Tab = 'expenses' | 'chores' | 'shopping' | 'bills'
 
-const TABS: { id: Tab; label: string; icon: string; gradient: string }[] = [
-  { id: 'expenses', label: 'Pengeluaran', icon: '💰', gradient: 'from-amber-500/20' },
-  { id: 'chores', label: 'Tugas', icon: '✓', gradient: 'from-sky-500/20' },
-  { id: 'shopping', label: 'Belanja', icon: '🛒', gradient: 'from-violet-500/20' },
-  { id: 'bills', label: 'Tagihan', icon: '📋', gradient: 'from-rose-500/20' },
+const TABS: { id: Tab; label: string; icon: string; accent: string }[] = [
+  { id: 'expenses', label: 'Pengeluaran', icon: '💰', accent: 'from-amber-500/20' },
+  { id: 'chores', label: 'Tugas', icon: '✅', accent: 'from-sky-500/20' },
+  { id: 'shopping', label: 'Belanja', icon: '🛒', accent: 'from-violet-500/20' },
+  { id: 'bills', label: 'Tagihan', icon: '📋', accent: 'from-rose-500/20' },
 ]
 
 function Login() {
@@ -35,12 +35,10 @@ function Login() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 px-6">
-      {/* Background glow */}
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[500px] w-[600px] -translate-x-1/2 rounded-full bg-emerald-500/15 blur-[120px]" />
       <div className="pointer-events-none absolute -bottom-32 right-0 h-[400px] w-[400px] rounded-full bg-violet-500/10 blur-[100px]" />
 
       <div className="relative z-10 w-full max-w-md">
-        {/* Logo */}
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/25">
             <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -53,9 +51,7 @@ function Login() {
           <p className="mt-2 text-sm text-zinc-500">Monitoring rumah tangga yang simpel</p>
         </div>
 
-        {/* Card */}
         <form onSubmit={submit} className="rounded-2xl border border-zinc-800/60 bg-zinc-900/70 p-7 backdrop-blur-xl shadow-2xl shadow-black/20">
-          {/* Mode toggle */}
           <div className="mb-5 flex rounded-lg bg-zinc-800/50 p-1">
             {(['login', 'signup'] as const).map(m => (
               <button key={m} type="button" onClick={() => { setMode(m); setErr('') }}
@@ -66,13 +62,12 @@ function Login() {
           </div>
 
           <div className="space-y-3.5">
-            <label className="block group">
+            <label className="block">
               <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-zinc-500">Email</span>
               <input type="email" value={email} onChange={e => setEmail(e.target.value)} required
                 placeholder="nama@email.com"
                 className="w-full rounded-xl border border-zinc-800 bg-zinc-800/50 px-4 py-3 text-sm outline-none transition placeholder:text-zinc-600 focus:border-emerald-500/50 focus:bg-zinc-800 focus:ring-2 focus:ring-emerald-500/10" />
             </label>
-
             <label className="block">
               <span className="mb-1.5 block text-[11px] font-medium uppercase tracking-wider text-zinc-500">Password</span>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} required
@@ -127,45 +122,69 @@ export default function App() {
   const activeTab = TABS.find(t => t.id === tab)!
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/90 backdrop-blur-xl">
-        <div className="mx-auto max-w-3xl px-4 h-14 flex items-center justify-between">
-          <h1 className="text-base font-bold tracking-tight">Daily<span className="text-emerald-400">Hans</span></h1>
-          <div className="flex items-center gap-2">
-            <span className="hidden text-xs text-zinc-500 sm:inline">{session.user.email}</span>
-            <button onClick={() => supabase.auth.signOut()}
-              className="rounded-lg border border-zinc-800 px-3 py-1.5 text-[11px] font-medium text-zinc-400 transition hover:border-red-500/30 hover:text-red-400">
-              Keluar
-            </button>
+    <div className="flex min-h-screen bg-zinc-950 text-zinc-100 font-sans">
+      {/* Sidebar kiri */}
+      <aside className="fixed inset-y-0 left-0 z-40 flex w-20 flex-col border-r border-zinc-800/60 bg-zinc-950/95 backdrop-blur-xl md:w-56">
+        {/* Logo */}
+        <div className="flex items-center gap-2 border-b border-zinc-800/60 px-4 py-5">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg shadow-emerald-500/20">
+            <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-4 0h4" />
+            </svg>
           </div>
+          <span className="hidden text-base font-bold md:block">Daily<span className="text-emerald-400">Hans</span></span>
         </div>
-      </header>
 
-      {/* Content with tab gradient accent */}
-      <main className={`mx-auto max-w-3xl px-4 pt-6 pb-24 bg-gradient-to-b ${activeTab.gradient} to-transparent`}>
-        {tab === 'expenses' && <Expenses />}
-        {tab === 'chores' && <Chores />}
-        {tab === 'shopping' && <Shopping />}
-        {tab === 'bills' && <Bills />}
-      </main>
-
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 border-t border-zinc-800/60 bg-zinc-950/95 backdrop-blur-xl">
-        <div className="mx-auto max-w-3xl flex">
+        {/* Menu */}
+        <nav className="flex-1 space-y-1 px-2 py-4">
           {TABS.map(t => {
             const active = tab === t.id
             return (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`relative flex-1 py-3 flex flex-col items-center gap-0.5 text-[11px] font-medium transition ${active ? 'text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'}`}>
-                <span className="text-base leading-none">{t.icon}</span>
-                {t.label}
-                {active && <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-full bg-emerald-400" />}
+                className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${active ? 'bg-emerald-500/10 text-emerald-400' : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'}`}>
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-base transition ${active ? 'bg-emerald-500/15' : 'bg-zinc-800/60'}`}>{t.icon}</span>
+                <span className="hidden md:block">{t.label}</span>
               </button>
             )
           })}
+        </nav>
+
+        {/* Footer */}
+        <div className="border-t border-zinc-800/60 p-3">
+          <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
+            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-zinc-600 to-zinc-700 text-[10px] font-bold text-white">
+              {session.user.email?.charAt(0).toUpperCase()}
+            </div>
+            <div className="hidden min-w-0 md:block">
+              <p className="truncate text-xs text-zinc-300">{session.user.email}</p>
+              <button onClick={() => supabase.auth.signOut()} className="text-[10px] text-zinc-500 hover:text-red-400">
+                Keluar
+              </button>
+            </div>
+          </div>
         </div>
-      </nav>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 pl-20 md:pl-56">
+        <div className="mx-auto max-w-3xl px-4 py-6">
+          {/* Page header */}
+          <div className="mb-6 flex items-center gap-3">
+            <div className={`flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${activeTab.accent} border border-zinc-800 text-xl`}>
+              {activeTab.icon}
+            </div>
+            <div>
+              <h1 className="text-xl font-bold tracking-tight">{activeTab.label}</h1>
+              <p className="text-xs text-zinc-500">Kelola {activeTab.label.toLowerCase()} rumah tangga</p>
+            </div>
+          </div>
+
+          {tab === 'expenses' && <Expenses />}
+          {tab === 'chores' && <Chores />}
+          {tab === 'shopping' && <Shopping />}
+          {tab === 'bills' && <Bills />}
+        </div>
+      </main>
     </div>
   )
 }
