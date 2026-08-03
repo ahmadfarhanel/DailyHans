@@ -46,7 +46,7 @@ function Login() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            Daily<span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">Hans</span>
+            Daily<span className="bg-gradient-to-r from-emerald-300 to-cyan-300 bg-clip-text text-transparent">KaoAyy</span>
           </h1>
           <p className="mt-2 text-sm text-zinc-500">Monitoring rumah tangga yang simpel</p>
         </div>
@@ -132,7 +132,7 @@ export default function App() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-4 0h4" />
             </svg>
           </div>
-          <span className="hidden text-base font-bold md:block">Daily<span className="text-emerald-400">Hans</span></span>
+          <span className="hidden text-base font-bold md:block">Daily<span className="text-emerald-400">KaoAyy</span></span>
         </div>
 
         {/* Menu */}
