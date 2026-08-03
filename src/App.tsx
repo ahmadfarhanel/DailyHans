@@ -8,6 +8,7 @@ import Chores from './components/Chores'
 import Shopping from './components/Shopping'
 import Bills from './components/Bills'
 import Notifications, { AlertBanner } from './components/Notifications'
+import Profile from './components/Profile'
 
 type Tab = 'dashboard' | 'expenses' | 'chores' | 'shopping' | 'bills'
 
@@ -108,6 +109,7 @@ export default function App() {
   const { session, loading } = useAuth()
   const [tab, setTab] = useState<Tab>('dashboard')
   const [alerts, setAlerts] = useState<BillAlert[]>([])
+  const [showProfile, setShowProfile] = useState(false)
 
   useEffect(() => {
     getBillAlerts().then(setAlerts)
@@ -159,13 +161,16 @@ export default function App() {
 
         <div className="border-t border-forest/8 p-3">
           <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
-            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-forest to-forest-light text-[10px] font-bold text-cream">
-              {session.user.email?.charAt(0).toUpperCase()}
-            </div>
-            <div className="hidden min-w-0 md:block">
-              <p className="truncate text-xs text-forest/60">{session.user.email}</p>
-              <button onClick={() => supabase.auth.signOut()} className="text-[10px] text-forest/35 hover:text-red-500">Keluar</button>
-            </div>
+            <button onClick={() => setShowProfile(true)} className="flex items-center gap-2">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-forest to-forest-light text-[10px] font-bold text-cream">
+                {session.user.email?.charAt(0).toUpperCase()}
+              </div>
+              <div className="hidden min-w-0 text-left md:block">
+                <p className="truncate text-xs text-forest/60">{session.user.email}</p>
+                <span className="text-[10px] text-forest/35 hover:text-forest">Pengaturan Profil</span>
+              </div>
+            </button>
+            <button onClick={() => supabase.auth.signOut()} className="ml-auto hidden text-[10px] text-forest/35 hover:text-red-500 md:block">Keluar</button>
           </div>
         </div>
       </aside>
@@ -180,6 +185,8 @@ export default function App() {
           {tab === 'bills' && <Bills />}
         </div>
       </main>
+
+      {showProfile && <Profile onClose={() => setShowProfile(false)} />}
     </div>
   )
 }
