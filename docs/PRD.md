@@ -149,14 +149,21 @@ Cron Jobs (Hermes auto re-run → desktop notification)
 ## 5. Fase Pengembangan
 
 ### Fase 1: Foundation (MVP)
-- [ ] Setup repo GitHub `DailyHans`
-- [ ] Inisialisasi Next.js/Vite + React + TypeScript + Tailwind
-- [ ] Install & konfigurasi shadcn/ui
-- [ ] Setup Supabase project (DB + Auth)
-- [ ] Install 9Router (`npm install -g 9router` → `9router`)
-- [ ] Konfigurasi 9Router: connect providers (Subscription + Cheap + FREE tier)
-- [ ] Point Hermes ke `localhost:20128/v1`
-- [ ] Connect Hermes ke Obsidian (vault setup)
+- [x] Setup repo GitHub `DailyHans` → https://github.com/ahmadfarhanel/DailyHans
+- [x] Inisialisasi Vite + React + TypeScript + Tailwind
+- [x] Setup Supabase project (URL: https://lgarhndeiudtsibfovhu.supabase.co)
+- [x] Env vars (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) di .env
+- [x] Supabase client (`src/lib/supabase.ts`)
+- [x] 9Router running di localhost:20128/v1
+- [x] Obsidian vault di E:\Code\BOT\Obsidian
+- [x] VS Code setup — editor saja, AI via Hermes direct
+- [x] Path alias `@/*` di tsconfig + vite.config
+- [x] Landing page DailyHans (hero, stats, stack, flow, roadmap)
+- [x] Build verification pass (`npm run build`)
+- [x] GitHub auth (web device flow) + gh CLI v2.97.0
+- [ ] Install & konfigurasi shadcn/ui (manual: `npx shadcn@latest init`)
+- [ ] Setup Vercel deploy
+- [ ] CI/CD pipeline (GitHub Actions; Fase 4)
 
 ### Fase 2: AI Pipeline
 - [ ] Integrate v0.dev workflow (UI generation)
