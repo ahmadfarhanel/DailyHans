@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from './lib/supabase'
 import { useAuth } from './lib/useAuth'
+import { getBillAlerts, type BillAlert } from './lib/notifications'
 import Dashboard from './components/Dashboard'
 import Expenses from './components/Expenses'
 import Chores from './components/Chores'
 import Shopping from './components/Shopping'
 import Bills from './components/Bills'
+import Notifications, { AlertBanner } from './components/Notifications'
 
 type Tab = 'dashboard' | 'expenses' | 'chores' | 'shopping' | 'bills'
 
@@ -105,6 +107,13 @@ function Login() {
 export default function App() {
   const { session, loading } = useAuth()
   const [tab, setTab] = useState<Tab>('dashboard')
+  const [alerts, setAlerts] = useState<BillAlert[]>([])
+
+  useEffect(() => {
+    getBillAlerts().then(setAlerts)
+    const t = setInterval(() => getBillAlerts().then(setAlerts), 60000)
+    return () => clearInterval(t)
+  }, [])
 
   if (loading) {
     return (
@@ -130,6 +139,9 @@ export default function App() {
             </svg>
           </div>
           <span className="hidden text-base font-bold md:block">Daily<span className="text-gold">KaoAyy</span></span>
+          <div className="ml-auto">
+            <Notifications alerts={alerts} />
+          </div>
         </div>
 
         <nav className="flex-1 space-y-1 px-2 py-4">
@@ -160,6 +172,7 @@ export default function App() {
 
       <main className="flex-1 pl-20 md:pl-56">
         <div className="mx-auto max-w-3xl px-4 py-6">
+          <AlertBanner alerts={alerts} />
           {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
           {tab === 'expenses' && <Expenses />}
           {tab === 'chores' && <Chores />}
