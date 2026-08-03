@@ -146,7 +146,7 @@ export async function getPlans() {
 export async function addPlan(p: Omit<Plan, 'id' | 'status'> & { status?: Plan['status']; added_by?: string }) {
   const uid = await getUid()
   const { added_by: _ab, ...rest } = p
-  const payload = { status: 'rencana', budget: 0, location: '', description: '', ...rest, user_id: uid }
+  const payload = { status: 'rencana', ...rest, user_id: uid }
   const { data, error } = await supabase.from('plans').insert(payload).select().single()
   if (error) console.error('addPlan error:', error)
   return data as Plan | null
