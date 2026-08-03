@@ -1,14 +1,16 @@
 import { useState } from 'react'
 import { supabase } from './lib/supabase'
 import { useAuth } from './lib/useAuth'
+import Dashboard from './components/Dashboard'
 import Expenses from './components/Expenses'
 import Chores from './components/Chores'
 import Shopping from './components/Shopping'
 import Bills from './components/Bills'
 
-type Tab = 'expenses' | 'chores' | 'shopping' | 'bills'
+type Tab = 'dashboard' | 'expenses' | 'chores' | 'shopping' | 'bills'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
+  { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
   { id: 'expenses', label: 'Pengeluaran', icon: '💰' },
   { id: 'chores', label: 'Tugas', icon: '✅' },
   { id: 'shopping', label: 'Belanja', icon: '🛒' },
@@ -102,7 +104,7 @@ function Login() {
 
 export default function App() {
   const { session, loading } = useAuth()
-  const [tab, setTab] = useState<Tab>('expenses')
+  const [tab, setTab] = useState<Tab>('dashboard')
 
   if (loading) {
     return (
@@ -158,6 +160,7 @@ export default function App() {
 
       <main className="flex-1 pl-20 md:pl-56">
         <div className="mx-auto max-w-3xl px-4 py-6">
+          {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
           {tab === 'expenses' && <Expenses />}
           {tab === 'chores' && <Chores />}
           {tab === 'shopping' && <Shopping />}
