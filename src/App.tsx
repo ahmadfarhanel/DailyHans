@@ -161,18 +161,25 @@ export default function App() {
           })}
         </nav>
 
-        <div className="border-t border-forest/8 bg-cream p-3">
-          <div className="flex items-center gap-2 rounded-lg px-2 py-1.5">
-            <button onClick={() => setShowProfile(true)} className="flex items-center gap-2">
-              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-forest to-forest-light text-[10px] font-bold text-cream">
+        {/* Footer */}
+        <div className="mt-auto border-t border-forest/8 bg-cream p-3">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-forest to-forest-light text-sm font-bold text-cream">
                 {session.user.email?.charAt(0).toUpperCase()}
               </div>
-              <div className="hidden min-w-0 text-left md:block">
-                <p className="truncate text-xs text-forest/60">{session.user.email}</p>
-                <span className="text-[10px] text-forest/35 hover:text-forest">Pengaturan Profil</span>
+              <div className="min-w-0 hidden md:block">
+                <p className="truncate text-xs text-forest">{session.user.email}</p>
               </div>
-            </button>
-            <button onClick={() => supabase.auth.signOut()} className="ml-auto hidden text-[10px] text-forest/35 hover:text-red-500 md:block">Keluar</button>
+            </div>
+            <div className="flex gap-2 hidden md:flex">
+              <button onClick={() => setShowProfile(true)} className="flex-1 rounded-lg bg-forest/5 px-3 py-1.5 text-xs font-medium text-forest hover:bg-forest/10 transition">
+                ⚙️ Profil
+              </button>
+              <button onClick={() => supabase.auth.signOut()} className="rounded-lg bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition">
+                Keluar
+              </button>
+            </div>
           </div>
         </div>
       </aside>
