@@ -4,17 +4,19 @@ import { useAuth } from './lib/useAuth'
 import { getBillAlerts, type BillAlert } from './lib/notifications'
 import Dashboard from './components/Dashboard'
 import Expenses from './components/Expenses'
+import Income from './components/Income'
 import Chores from './components/Chores'
 import Shopping from './components/Shopping'
 import Bills from './components/Bills'
 import Notifications, { AlertBanner } from './components/Notifications'
 import Profile from './components/Profile'
 
-type Tab = 'dashboard' | 'expenses' | 'chores' | 'shopping' | 'bills'
+type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
   { id: 'expenses', label: 'Pengeluaran', icon: '💰' },
+  { id: 'income', label: 'Pemasukan', icon: '📈' },
   { id: 'chores', label: 'Tugas', icon: '✅' },
   { id: 'shopping', label: 'Belanja', icon: '🛒' },
   { id: 'bills', label: 'Tagihan', icon: '📋' },
@@ -180,6 +182,7 @@ export default function App() {
           <AlertBanner alerts={alerts} />
           {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
           {tab === 'expenses' && <Expenses />}
+          {tab === 'income' && <Income />}
           {tab === 'chores' && <Chores />}
           {tab === 'shopping' && <Shopping />}
           {tab === 'bills' && <Bills />}
