@@ -2,5 +2,11 @@
 
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --color-emerald-350: #4ade80;
+  --color-cream: #faf9f6;
+  --color-cream-dark: #f5f3ed;
+  --color-forest: #1a4d2e;
+  --color-forest-light: #2d6a4f;
+  --color-forest-dark: #143d24;
+  --color-gold: #c9a227;
+  --color-gold-light: #e6c547;
 }
