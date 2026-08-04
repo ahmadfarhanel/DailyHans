@@ -5,6 +5,7 @@ import type { Expense, Chore, ShoppingItem, Bill, Plan } from '../lib/db'
 import { Card } from './ui'
 
 const fmt = (n: number) => n.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
+const pct = (value: number, total: number) => total > 0 ? Math.max(0, Math.min(100, Math.round(value / total * 100))) : 0
 
 type Props = { onNavigate: (tab: string) => void }
 
@@ -25,163 +26,137 @@ export default function Dashboard({ onNavigate }: Props) {
     supabase.from('income').select('*').then(({ data }) => setIncome(data || []))
   }, [])
 
-  const expenseTotal = expenses.reduce((s, i) => s + i.amount, 0)
-  const incomeTotal = income.reduce((s, i) => s + i.amount, 0)
-  const billUnpaid = bills.filter(i => !i.paid).reduce((s, i) => s + i.amount, 0)
-  const sisa = incomeTotal - expenseTotal - billUnpaid
+  const expenseTotal = expenses.reduce((s, i) => s + Number(i.amount), 0)
+  const incomeTotal = income.reduce((s, i) => s + Number(i.amount), 0)
+  const billUnpaid = bills.filter(i => !i.paid).reduce((s, i) => s + Number(i.amount), 0)
+  const balance = incomeTotal - expenseTotal - billUnpaid
   const choresDone = chores.filter(i => i.done).length
   const shoppingBought = shopping.filter(i => i.bought).length
   const upcomingPlans = plans.filter(i => i.status === 'rencana').length
+  const used = expenseTotal + billUnpaid
+  const usedPercent = pct(used, incomeTotal)
+  const safeBalance = Math.max(0, balance)
+
+  const actions = [
+    { label: 'Pengeluaran', sub: 'Scan struk / tambah biaya', icon: '💸', tab: 'expenses' },
+    { label: 'Pemasukan', sub: 'Catat tabungan & income', icon: '📈', tab: 'income' },
+    { label: 'Wedding', sub: 'Planner & daftar tamu', icon: '💍', tab: 'wedding' },
+    { label: 'Tagihan', sub: 'Cek yang belum lunas', icon: '📋', tab: 'bills' },
+  ]
+
+  const activity = [
+    ...expenses.slice(0, 3).map(item => ({ id: `e-${item.id}`, icon: '💸', title: item.description || item.category, meta: 'Pengeluaran', value: fmt(item.amount), tone: 'text-red-500' })),
+    ...income.slice(0, 2).map((item: any) => ({ id: `i-${item.id}`, icon: '📈', title: item.description || item.source, meta: 'Pemasukan', value: `+${fmt(item.amount)}`, tone: 'text-emerald-500' })),
+    ...chores.filter(item => item.done).slice(0, 2).map(item => ({ id: `c-${item.id}`, icon: '✅', title: item.title, meta: 'Tugas selesai', value: 'Done', tone: 'text-forest/45' })),
+  ].slice(0, 6)
 
   return (
     <div className="space-y-6">
-      {/* Welcome */}
-      <div className="rounded-2xl bg-gradient-to-r from-forest to-forest-light p-6 text-cream shadow-lg shadow-forest/20 overflow-hidden">
-        <h1 className="text-xl font-bold truncate">Selamat Datang! 👋</h1>
-        <p className="mt-1 text-xs text-cream/80 break-words">Pantau keuangan dan tugas rumah tangga dengan mudah.</p>
-      </div>
+      <section className="relative overflow-hidden rounded-[2rem] border border-forest/15 bg-gradient-to-br from-[#31182a] via-[#1c1221] to-[#0b0910] p-5 shadow-2xl shadow-forest/10 sm:p-7">
+        <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-forest/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-16 left-6 h-40 w-40 rounded-full bg-gold/20 blur-3xl" />
+        <div className="relative">
+          <p className="text-xs font-bold uppercase tracking-[0.24em] text-forest/60">DailyKaoAyy Home</p>
+          <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0">
+              <h1 className="text-2xl font-black tracking-tight text-forest sm:text-3xl">Ringkasan Rumah Hari Ini</h1>
+              <p className="mt-1 max-w-xl text-sm leading-relaxed text-forest/58">Keuangan, tugas, belanja, dan wedding planner tetap rapi dalam satu dashboard.</p>
+            </div>
+          </div>
 
-      {/* Ringkasan Keuangan */}
-      <Card title="Ringkasan Keuangan" icon="📊">
-        <div className="grid grid-cols-2 gap-3">
-          {/* Pemasukan */}
-          <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 overflow-hidden">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-base shrink-0">📈</span>
-              <span className="text-[10px] font-medium text-emerald-700 truncate">Pemasukan</span>
+          <div className="mt-6 rounded-3xl border border-forest/12 bg-cream/55 p-4 backdrop-blur sm:p-5">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-xs text-forest/50">Sisa saldo aman</p>
+                <p className={`mt-1 truncate text-3xl font-black ${balance >= 0 ? 'text-forest' : 'text-red-500'}`}>{fmt(balance)}</p>
+              </div>
+              <span className={`rounded-full px-3 py-1 text-xs font-bold ${balance >= 0 ? 'bg-forest/12 text-forest' : 'bg-red-50 text-red-500'}`}>{balance >= 0 ? 'Aman' : 'Minus'}</span>
             </div>
-            <p className="mt-2 font-bold text-emerald-600 break-words leading-tight" style={{ fontSize: 'clamp(10px, 3.5vw, 17px)' }}>{fmt(incomeTotal)}</p>
-          </div>
-          {/* Pengeluaran */}
-          <div className="rounded-xl bg-red-50 border border-red-200 p-3 overflow-hidden">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-base shrink-0">💸</span>
-              <span className="text-[10px] font-medium text-red-600 truncate">Pengeluaran</span>
+            <div className="mt-4 h-3 overflow-hidden rounded-full bg-forest/10">
+              <div className="h-full rounded-full bg-gradient-to-r from-red-400 via-gold to-forest" style={{ width: `${usedPercent}%` }} />
             </div>
-            <p className="mt-2 font-bold text-red-500 break-words leading-tight" style={{ fontSize: 'clamp(10px, 3.5vw, 17px)' }}>{fmt(expenseTotal)}</p>
-          </div>
-          {/* Tagihan Tertunda */}
-          <div className="rounded-xl bg-amber-50 border border-amber-200 p-3 overflow-hidden">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-base shrink-0">📋</span>
-              <span className="text-[10px] font-medium text-amber-700 truncate">Tagihan</span>
+            <div className="mt-2 flex justify-between text-[10px] text-forest/42">
+              <span>Terpakai {usedPercent}%</span>
+              <span>Sisa {fmt(safeBalance)}</span>
             </div>
-            <p className="mt-2 font-bold text-amber-600 break-words leading-tight" style={{ fontSize: 'clamp(10px, 3.5vw, 17px)' }}>{fmt(billUnpaid)}</p>
-          </div>
-          {/* Sisa / Saldo */}
-          <div className={`rounded-xl border p-3 overflow-hidden ${sisa >= 0 ? 'bg-forest/5 border-forest/20' : 'bg-red-50 border-red-200'}`}>
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-base shrink-0">💰</span>
-              <span className={`text-[10px] font-medium truncate ${sisa >= 0 ? 'text-forest' : 'text-red-600'}`}>Sisa Saldo</span>
-            </div>
-            <p className={`mt-2 font-bold break-words leading-tight ${sisa >= 0 ? 'text-forest' : 'text-red-500'}`} style={{ fontSize: 'clamp(10px, 3.5vw, 17px)' }}>{fmt(sisa)}</p>
           </div>
         </div>
-        {/* Progress bar */}
-        {incomeTotal > 0 && (
-          <div className="mt-4">
-            <div className="flex justify-between text-[10px] text-forest/40 mb-1">
-              <span className="truncate">Keluar: {Math.round(expenseTotal / incomeTotal * 100)}%</span>
-              <span className="truncate">Tagihan: {Math.round(billUnpaid / incomeTotal * 100)}%</span>
-              <span className="truncate">Sisa: {Math.round(sisa / incomeTotal * 100)}%</span>
-            </div>
-            <div className="h-2 rounded-full bg-cream overflow-hidden flex">
-              <div className="bg-red-400" style={{ width: `${Math.round(expenseTotal / incomeTotal * 100)}%` }} />
-              <div className="bg-amber-400" style={{ width: `${Math.round(billUnpaid / incomeTotal * 100)}%` }} />
-              <div className="bg-emerald-500" style={{ width: `${Math.max(0, Math.round(sisa / incomeTotal * 100))}%` }} />
-            </div>
-          </div>
-        )}
-      </Card>
+      </section>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <button onClick={() => onNavigate('chores')}
-          className="rounded-2xl bg-gradient-to-br from-forest/15 to-forest/5 border border-forest/5 p-3.5 text-left transition hover:shadow-md hover:scale-[1.02] overflow-hidden">
-          <span className="text-xl">✅</span>
-          <p className="mt-1.5 text-lg font-bold text-forest truncate">{choresDone}/{chores.length}</p>
-          <p className="text-[10px] text-forest/50 truncate">Tugas Selesai</p>
-        </button>
-        <button onClick={() => onNavigate('shopping')}
-          className="rounded-2xl bg-gradient-to-br from-sky-100 to-sky-50 border border-forest/5 p-3.5 text-left transition hover:shadow-md hover:scale-[1.02] overflow-hidden">
-          <span className="text-xl">🛒</span>
-          <p className="mt-1.5 text-lg font-bold text-sky-600 truncate">{shoppingBought}/{shopping.length}</p>
-          <p className="text-[10px] text-forest/50 truncate">Belanja Dibeli</p>
-        </button>
-        <button onClick={() => onNavigate('plans')}
-          className="rounded-2xl bg-gradient-to-br from-indigo-100 to-indigo-50 border border-forest/5 p-3.5 text-left transition hover:shadow-md hover:scale-[1.02] overflow-hidden">
-          <span className="text-xl">🗺️</span>
-          <p className="mt-1.5 text-lg font-bold text-indigo-600 truncate">{upcomingPlans}</p>
-          <p className="text-[10px] text-forest/50 truncate">Rencana Acara</p>
-        </button>
-      </div>
+      <section>
+        <div className="mb-3 flex items-center justify-between">
+          <div><p className="text-xs font-bold uppercase tracking-[.18em] text-forest/50">Keuangan</p><h2 className="mt-0.5 text-lg font-black text-forest">Ringkasan saldo</h2></div>
+          <span className="rounded-full bg-forest/8 px-3 py-1 text-[11px] font-semibold text-forest/65">Total saat ini</span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Metric icon="📈" label="Pemasukan" value={fmt(incomeTotal)} tone="text-emerald-500" surface="bg-emerald-50 border-emerald-200" />
+          <Metric icon="💸" label="Pengeluaran" value={fmt(expenseTotal)} tone="text-red-500" surface="bg-red-50 border-red-200" />
+          <Metric icon="📋" label="Tagihan belum bayar" value={fmt(billUnpaid)} tone="text-gold" surface="bg-amber-50 border-amber-200" />
+          <Metric icon="💰" label="Sisa saldo" value={fmt(balance)} tone={balance >= 0 ? 'text-forest' : 'text-red-500'} surface={balance >= 0 ? 'bg-forest/8 border-forest/20' : 'bg-red-50 border-red-200'} />
+        </div>
+      </section>
 
-      {/* Quick Actions */}
       <Card title="Aksi Cepat" icon="⚡">
-        <div className="grid grid-cols-2 gap-2">
-          {[
-            { label: 'Tambah Pengeluaran', icon: '💸', tab: 'expenses' },
-            { label: 'Tambah Pemasukan', icon: '📈', tab: 'income' },
-            { label: 'Tambah Tugas', icon: '✅', tab: 'chores' },
-            { label: 'Tambah Belanja', icon: '🛒', tab: 'shopping' },
-            { label: 'Tambah Tagihan', icon: '📋', tab: 'bills' },
-            { label: 'Tambah Rencana', icon: '🗺️', tab: 'plans' },
-          ].map(a => (
-            <button key={a.label} onClick={() => onNavigate(a.tab)}
-              className="flex items-center gap-2 rounded-xl border border-forest/10 bg-cream px-3 py-3 text-xs font-medium text-forest transition hover:border-forest/20 hover:bg-cream-dark overflow-hidden">
-              <span className="text-base shrink-0">{a.icon}</span>
-              <span className="truncate">{a.label}</span>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {actions.map(action => (
+            <button key={action.tab} onClick={() => onNavigate(action.tab)} className="group flex items-center gap-3 rounded-2xl border border-forest/10 bg-cream/70 p-3 text-left transition hover:border-forest/25 hover:bg-cream-dark active:scale-[0.99]">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-forest/10 text-xl transition group-hover:bg-forest/15">{action.icon}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-sm font-bold text-forest">{action.label}</span>
+                <span className="mt-0.5 block truncate text-[11px] text-forest/45">{action.sub}</span>
+              </span>
+              <span className="text-forest/35">›</span>
             </button>
           ))}
         </div>
       </Card>
 
-      {/* Recent Activity */}
+      <div className="grid grid-cols-3 gap-3">
+        <MiniStat icon="✅" value={`${choresDone}/${chores.length}`} label="Tugas" onClick={() => onNavigate('chores')} />
+        <MiniStat icon="🛒" value={`${shoppingBought}/${shopping.length}`} label="Belanja" onClick={() => onNavigate('shopping')} />
+        <MiniStat icon="🗺️" value={String(upcomingPlans)} label="Rencana" onClick={() => onNavigate('plans')} />
+      </div>
+
       <Card title="Aktivitas Terbaru" icon="🕐">
-        <div className="space-y-3">
-          {expenses.slice(0, 3).map(e => (
-            <div key={e.id} className="flex items-center justify-between text-sm gap-2 min-w-0">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <span className="text-base shrink-0">💸</span>
-                <span className="text-forest truncate">{e.description || e.category}</span>
+        <div className="space-y-2.5">
+          {activity.map(item => (
+            <div key={item.id} className="flex items-center gap-3 rounded-2xl border border-forest/8 bg-cream/55 px-3 py-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-forest/8 text-base">{item.icon}</span>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-forest">{item.title}</p>
+                <p className="text-[10px] text-forest/40">{item.meta}</p>
               </div>
-              <span className="font-medium text-forest shrink-0 text-xs">{fmt(e.amount)}</span>
+              <span className={`shrink-0 text-xs font-bold ${item.tone}`}>{item.value}</span>
             </div>
           ))}
-          {income.slice(0, 2).map((inc: any) => (
-            <div key={inc.id} className="flex items-center justify-between text-sm gap-2 min-w-0">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <span className="text-base shrink-0">📈</span>
-                <span className="text-forest truncate">{inc.description || inc.source}</span>
-              </div>
-              <span className="font-medium text-emerald-600 shrink-0 text-xs">+{fmt(inc.amount)}</span>
-            </div>
-          ))}
-          {chores.filter(i => i.done).slice(0, 2).map(c => (
-            <div key={c.id} className="flex items-center justify-between text-sm gap-2 min-w-0">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
-                <span className="text-base shrink-0">✅</span>
-                <span className="text-forest/60 line-through truncate">{c.title}</span>
-              </div>
-              <span className="text-xs text-forest/40 shrink-0">selesai</span>
-            </div>
-          ))}
-          {expenses.length === 0 && income.length === 0 && chores.length === 0 && (
-            <p className="py-4 text-center text-sm text-forest/40">Belum ada aktivitas</p>
-          )}
+          {!activity.length && <p className="py-8 text-center text-sm text-forest/40">Belum ada aktivitas. Mulai dari scan struk atau tambah pemasukan.</p>}
         </div>
       </Card>
 
-      {/* Tips */}
-      <div className="rounded-2xl bg-gradient-to-r from-gold/15 to-gold/5 border border-gold/20 p-4 overflow-hidden">
+      <section className="rounded-[1.75rem] border border-gold/20 bg-gradient-to-br from-gold/15 via-forest/8 to-forest-light/10 p-4 shadow-lg shadow-gold/5">
         <div className="flex items-start gap-3">
-          <span className="text-2xl shrink-0">💡</span>
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-gold/15 text-2xl">💡</span>
           <div className="min-w-0">
-            <p className="text-sm font-medium text-amber-800 truncate">Tips Keuangan</p>
-            <p className="mt-1 text-xs text-forest/60 break-words">Alokasikan minimal 20% penghasilan untuk tabungan dan dana darurat.</p>
+            <p className="text-sm font-bold text-forest">Tips hari ini</p>
+            <p className="mt-1 text-xs leading-relaxed text-forest/58">Pisahkan pengeluaran rumah dan wedding. Budget tetap kebaca jernih, keputusan jadi lebih tenang.</p>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   )
+}
+
+function Metric({ icon, label, value, tone, surface }: { icon: string; label: string; value: string; tone: string; surface: string }) {
+  return <div className={`min-w-0 rounded-3xl border p-3 shadow-lg shadow-forest/5 sm:p-4 ${surface}`}>
+    <div className="flex items-start gap-2"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-black/10 text-base">{icon}</span><span className="pt-0.5 text-[11px] font-bold leading-tight text-forest/70 sm:text-xs">{label}</span></div>
+    <p className={`mt-3 truncate text-base font-black tracking-tight sm:text-lg ${tone}`}>{value}</p>
+  </div>
+}
+
+function MiniStat({ icon, value, label, onClick }: { icon: string; value: string; label: string; onClick: () => void }) {
+  return <button onClick={onClick} className="min-w-0 rounded-3xl border border-forest/10 bg-white/80 p-3 text-left shadow-lg shadow-forest/5 transition active:scale-[0.98]">
+    <span className="text-xl">{icon}</span>
+    <p className="mt-2 truncate text-lg font-black text-forest">{value}</p>
+    <p className="truncate text-[10px] text-forest/45">{label}</p>
+  </button>
 }

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { Button, Input } from './ui'
+import WeddingEditDialog, { type EditField } from './WeddingEditDialog'
 
 type Guest = { id: string; name: string; family_side: string; region: string; pax: number; rsvp: 'menunggu' | 'hadir' | 'tidak_hadir' }
 
@@ -9,6 +10,7 @@ export default function WeddingGuests() {
   const [form, setForm] = useState({ name: '', family: '', region: '', pax: '1' })
   const [filter, setFilter] = useState<'all' | Guest['rsvp']>('all')
   const [error, setError] = useState('')
+  const [editing, setEditing] = useState<Guest | null>(null)
   const load = async () => {
     const { data, error: loadError } = await supabase.from('wedding_guests').select('*').order('created_at')
     if (loadError) setError(loadError.message)
@@ -31,6 +33,12 @@ export default function WeddingGuests() {
   }), [items])
   const updateRsvp = async (id: string, rsvp: Guest['rsvp']) => { await supabase.from('wedding_guests').update({ rsvp }).eq('id', id); await load() }
   const remove = async (id: string) => { await supabase.from('wedding_guests').delete().eq('id', id); await load() }
+  const edit = async (values: Record<string, string>) => {
+    if (!editing || !values.name.trim()) return
+    await supabase.from('wedding_guests').update({ name: values.name.trim(), family_side: values.family_side || 'Mempelai', region: values.region || '', pax: Number(values.pax) || 1 }).eq('id', editing.id)
+    setEditing(null); await load()
+  }
+  const guestFields = (item: Guest): EditField[] => [{ key: 'name', label: 'Nama tamu', value: item.name }, { key: 'family_side', label: 'Keluarga siapa?', value: item.family_side }, { key: 'region', label: 'Daerah / kota', value: item.region }, { key: 'pax', label: 'Jumlah pax', value: String(item.pax), type: 'number' }]
 
   return <section className="space-y-5">
     <div className="relative overflow-hidden rounded-3xl border border-forest/15 bg-gradient-to-br from-forest/20 via-gold/10 to-forest-light/15 p-5 shadow-xl shadow-forest/10 sm:p-7">
@@ -50,8 +58,9 @@ export default function WeddingGuests() {
 
     <div className="rounded-2xl border border-forest/10 bg-white/90 p-4 shadow-lg shadow-forest/5 sm:p-5">
       <div className="flex flex-wrap gap-2">{([{ id: 'all', label: 'Semua' }, { id: 'menunggu', label: 'Menunggu' }, { id: 'hadir', label: 'Hadir' }, { id: 'tidak_hadir', label: 'Tidak hadir' }] as const).map(option => <button key={option.id} type="button" onClick={() => setFilter(option.id)} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${filter === option.id ? 'bg-forest text-cream' : 'bg-forest/8 text-forest/65'}`}>{option.label}</button>)}</div>
-      <div className="mt-4 space-y-2">{visible.map(item => <article key={item.id} className="flex flex-col gap-3 rounded-2xl border border-forest/10 bg-cream/60 p-3 sm:flex-row sm:items-center"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-forest/10 text-lg">👤</div><div className="min-w-0 flex-1"><h3 className="truncate text-sm font-bold text-forest">{item.name}</h3><p className="truncate text-xs text-forest/60">{item.family_side} • {item.region || 'Daerah belum diisi'} • {item.pax} pax</p></div><div className="flex items-center justify-between gap-2 sm:justify-end"><select value={item.rsvp} onChange={e => updateRsvp(item.id, e.target.value as Guest['rsvp'])} className="min-h-10 rounded-xl border border-forest/15 bg-white px-3 py-1 text-xs"><option value="menunggu">Menunggu</option><option value="hadir">Hadir</option><option value="tidak_hadir">Tidak hadir</option></select><button type="button" onClick={() => remove(item.id)} className="rounded-lg px-2 py-2 text-xs text-red-500 hover:bg-red-50">Hapus</button></div></article>)}{!visible.length && <p className="py-10 text-center text-sm text-forest/45">Belum ada tamu pada daftar ini.</p>}</div>
+      <div className="mt-4 space-y-2">{visible.map(item => <article key={item.id} className="flex flex-col gap-3 rounded-2xl border border-forest/10 bg-cream/60 p-3 sm:flex-row sm:items-center"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-forest/10 text-lg">👤</div><div className="min-w-0 flex-1"><h3 className="truncate text-sm font-bold text-forest">{item.name}</h3><p className="truncate text-xs text-forest/60">{item.family_side} • {item.region || 'Daerah belum diisi'} • {item.pax} pax</p></div><div className="flex items-center justify-between gap-2 sm:justify-end"><select value={item.rsvp} onChange={e => updateRsvp(item.id, e.target.value as Guest['rsvp'])} className="min-h-10 rounded-xl border border-forest/15 bg-white px-3 py-1 text-xs"><option value="menunggu">Menunggu</option><option value="hadir">Hadir</option><option value="tidak_hadir">Tidak hadir</option></select><button type="button" onClick={() => setEditing(item)} className="rounded-lg px-2 py-2 text-xs text-forest hover:bg-forest/8">Edit</button><button type="button" onClick={() => remove(item.id)} className="rounded-lg px-2 py-2 text-xs text-red-500 hover:bg-red-50">Hapus</button></div></article>)}{!visible.length && <p className="py-10 text-center text-sm text-forest/45">Belum ada tamu pada daftar ini.</p>}</div>
     </div>
+    {editing && <WeddingEditDialog title="Edit Tamu" fields={guestFields(editing)} onClose={() => setEditing(null)} onSave={edit} />}
   </section>
 }
 function Stat({ value, label }: { value: string; label: string }) { return <div className="rounded-xl bg-cream/80 p-3"><p className="text-lg font-bold text-forest">{value}</p><p className="text-[10px] text-forest/55">{label}</p></div> }
