@@ -13,13 +13,15 @@ import Notifications, { AlertBanner } from './components/Notifications'
 import Profile from './components/Profile'
 import WeddingPlanner from './components/WeddingPlanner'
 import WeddingGuests from './components/WeddingGuests'
+import Savings from './components/Savings'
 
-type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills' | 'plans' | 'wedding'
+type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills' | 'plans' | 'wedding' | 'savings'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
   { id: 'expenses', label: 'Pengeluaran', icon: '💰' },
   { id: 'income', label: 'Pemasukan', icon: '📈' },
+  { id: 'savings', label: 'Tabungan', icon: '🎯' },
   { id: 'chores', label: 'Tugas', icon: '✅' },
   { id: 'shopping', label: 'Belanja', icon: '🛒' },
   { id: 'bills', label: 'Tagihan', icon: '📋' },
@@ -29,7 +31,7 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
 
 const MOBILE_GROUPS = [
   { id: 'home', label: 'Beranda', icon: '🏠', tabs: ['dashboard'] as Tab[] },
-  { id: 'finance', label: 'Keuangan', icon: '💗', tabs: ['expenses', 'income', 'bills'] as Tab[] },
+  { id: 'finance', label: 'Keuangan', icon: '💗', tabs: ['expenses', 'income', 'savings', 'bills'] as Tab[] },
   { id: 'homecare', label: 'Rumah', icon: '⌂', tabs: ['chores', 'shopping', 'plans'] as Tab[] },
   { id: 'wedding', label: 'Wedding', icon: '💍', tabs: ['wedding'] as Tab[] },
 ] as const
@@ -228,6 +230,7 @@ export default function App() {
           {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
           {tab === 'expenses' && <Expenses />}
           {tab === 'income' && <Income />}
+          {tab === 'savings' && <Savings />}
           {tab === 'chores' && <Chores />}
           {tab === 'shopping' && <Shopping />}
           {tab === 'bills' && <Bills />}

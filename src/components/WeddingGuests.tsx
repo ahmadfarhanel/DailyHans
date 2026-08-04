@@ -118,13 +118,14 @@ export default function WeddingGuests() {
   const remove = async (id: string) => { await supabase.from('wedding_guests').delete().eq('id', id); await load() }
   const edit = async (values: Record<string, string>) => {
     if (!editing || !values.name.trim()) return
-    await supabase.from('wedding_guests').update({ name: values.name.trim(), family_side: values.family_side || 'Mempelai', region: values.region || '', pax: Number(values.pax) || 1 }).eq('id', editing.id)
+    await supabase.from('wedding_guests').update({ name: values.name.trim(), family_side: values.family_side || 'Mempelai', region: values.region || '', phone: values.phone.trim(), pax: Number(values.pax) || 1 }).eq('id', editing.id)
     setEditing(null); await load()
   }
   const guestFields = (item: Guest): EditField[] => [
     { key: 'name', label: 'Nama tamu', value: item.name },
     { key: 'family_side', label: 'Keluarga siapa?', value: item.family_side },
     { key: 'region', label: 'Daerah / kota', value: item.region },
+    { key: 'phone', label: 'Nomor WhatsApp', value: item.phone || '', type: 'text' },
     { key: 'pax', label: 'Jumlah pax', value: String(item.pax), type: 'number' },
   ]
   const copyInvite = async (name: string) => {

@@ -16,6 +16,7 @@ export default function Dashboard({ onNavigate }: Props) {
   const [bills, setBills] = useState<Bill[]>([])
   const [plans, setPlans] = useState<Plan[]>([])
   const [income, setIncome] = useState<any[]>([])
+  const [savings, setSavings] = useState<{ amount: number }[]>([])
 
   useEffect(() => {
     getExpenses().then(setExpenses)
@@ -24,12 +25,15 @@ export default function Dashboard({ onNavigate }: Props) {
     getBills().then(setBills)
     getPlans().then(setPlans)
     supabase.from('income').select('*').then(({ data }) => setIncome(data || []))
+    supabase.from('savings_deposits').select('amount').then(({ data }) => setSavings(data || []))
   }, [])
 
   const expenseTotal = expenses.reduce((s, i) => s + Number(i.amount), 0)
   const incomeTotal = income.reduce((s, i) => s + Number(i.amount), 0)
+  const savingsTotal = savings.reduce((s, i) => s + Number(i.amount), 0)
+  const availableIncome = incomeTotal - savingsTotal
   const billUnpaid = bills.filter(i => !i.paid).reduce((s, i) => s + Number(i.amount), 0)
-  const balance = incomeTotal - expenseTotal - billUnpaid
+  const balance = availableIncome - expenseTotal - billUnpaid
   const choresDone = chores.filter(i => i.done).length
   const shoppingBought = shopping.filter(i => i.bought).length
   const upcomingPlans = plans.filter(i => i.status === 'rencana').length
@@ -89,11 +93,17 @@ export default function Dashboard({ onNavigate }: Props) {
           <span className="rounded-full bg-forest/8 px-3 py-1 text-[11px] font-semibold text-forest/65">Total saat ini</span>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Metric icon="📈" label="Pemasukan" value={fmt(incomeTotal)} tone="text-emerald-500" surface="bg-emerald-50 border-emerald-200" />
+          <Metric icon="📈" label="Total pemasukan" value={fmt(incomeTotal)} tone="text-emerald-500" surface="bg-emerald-50 border-emerald-200" />
           <Metric icon="💸" label="Pengeluaran" value={fmt(expenseTotal)} tone="text-red-500" surface="bg-red-50 border-red-200" />
           <Metric icon="📋" label="Tagihan belum bayar" value={fmt(billUnpaid)} tone="text-gold" surface="bg-amber-50 border-amber-200" />
           <Metric icon="💰" label="Sisa saldo" value={fmt(balance)} tone={balance >= 0 ? 'text-forest' : 'text-red-500'} surface={balance >= 0 ? 'bg-forest/8 border-forest/20' : 'bg-red-50 border-red-200'} />
         </div>
+        <button onClick={() => onNavigate('savings')} className="mt-3 flex w-full items-center gap-3 rounded-3xl border border-gold/35 bg-gradient-to-r from-gold/18 via-forest/12 to-forest-light/12 p-4 text-left shadow-lg shadow-gold/10 transition hover:border-gold/60 active:scale-[0.99]">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/20 text-2xl">🎯</span>
+          <span className="min-w-0 flex-1"><span className="block text-sm font-black text-forest">Target Tabungan</span><span className="mt-0.5 block text-xs text-forest/60">Dana sudah disisihkan dari sisa saldo</span></span>
+          <span className="shrink-0 text-right"><span className="block text-base font-black text-gold">{fmt(savingsTotal)}</span><span className="text-[10px] font-semibold text-forest/55">Buka target ›</span></span>
+        </button>
+        <p className="mt-2 text-[11px] text-forest/45">Total pemasukan tetap utuh. Tabungan hanya mengurangi sisa saldo yang bisa dipakai.</p>
       </section>
 
       <Card title="Aksi Cepat" icon="⚡">
