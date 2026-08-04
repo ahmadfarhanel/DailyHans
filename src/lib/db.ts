@@ -14,6 +14,7 @@ export type Expense = {
   category: string
   description: string
   date: string
+  receipt_path?: string | null
 }
 
 export async function getExpenses(limit = 50) {

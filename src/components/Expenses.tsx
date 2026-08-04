@@ -2,7 +2,9 @@ import { useEffect, useState } from 'react'
 import { getExpenses, addExpense, deleteExpense, type Expense } from '../lib/db'
 import { Card, Input, Button, useForm, Badge, EmptyState } from './ui'
 import ConfirmDialog from './ConfirmDialog'
+import TransactionImage from './TransactionImage'
 import { jakartaToday } from '../lib/date'
+import { uploadTransactionImage } from '../lib/transactionImage'
 
 type ReceiptScan = {
   merchant: string
@@ -35,6 +37,7 @@ export default function Expenses() {
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
   const [receiptPreviewOpen, setReceiptPreviewOpen] = useState(false)
   const [receiptName, setReceiptName] = useState('')
+  const [receiptFile, setReceiptFile] = useState<File | null>(null)
   const [scanning, setScanning] = useState(false)
   const [scanError, setScanError] = useState('')
   const [scan, setScan] = useState<ReceiptScan | null>(null)
@@ -77,6 +80,7 @@ export default function Expenses() {
   const selectReceipt = (file?: File) => {
     if (!file || !file.type.startsWith('image/')) return
     setReceiptName(file.name)
+    setReceiptFile(file)
     setReceiptPreviewOpen(false)
     setScan(null)
     setScanError('')
@@ -89,6 +93,7 @@ export default function Expenses() {
   const clearReceipt = () => {
     setReceiptPreviewOpen(false)
     setReceiptPreview(null)
+    setReceiptFile(null)
     setReceiptName('')
     setScan(null)
     setScanError('')
@@ -114,15 +119,24 @@ export default function Expenses() {
 
   const confirmAddExpense = async () => {
     if (!confirmAdd) return
+    let receipt_path: string | undefined
+    try {
+      receipt_path = receiptFile ? await uploadTransactionImage(receiptFile) : undefined
+    } catch {
+      setScanError('Foto struk gagal diunggah. Coba lagi.')
+      return
+    }
     const created = await addExpense({
       amount: confirmAdd.amount,
       category: confirmAdd.category,
       description: confirmAdd.description,
       date: confirmAdd.date,
+      receipt_path,
       added_by: confirmAdd.added_by || undefined,
     } as any)
     if (created) setItems([created, ...items])
     setConfirmAdd(null)
+    clearReceipt()
     reset(); setShowForm(false)
   }
 
@@ -235,6 +249,7 @@ export default function Expenses() {
           return (
             <div key={i.id} className="group flex items-center justify-between rounded-xl border border-forest/8 bg-white px-4 py-3 transition hover:bg-cream-dark hover:border-forest/12">
               <div className="flex items-center gap-3 min-w-0 flex-1">
+                <TransactionImage path={i.receipt_path} alt={`Struk ${i.description || i.category}`} />
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cream text-lg">{cat.icon}</div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-forest truncate">{i.description || i.category}</p>
