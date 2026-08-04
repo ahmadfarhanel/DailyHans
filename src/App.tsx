@@ -224,7 +224,7 @@ export default function App() {
       </aside>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="md:pl-56 pt-[57px] pb-20 md:pt-0 md:pb-0">
+      <main className="md:pl-56 pt-[57px] pb-36 md:pt-0 md:pb-0">
         <div className="mx-auto max-w-3xl px-4 py-6">
           <AlertBanner alerts={alerts} />
           {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
