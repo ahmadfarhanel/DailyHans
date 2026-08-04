@@ -33,6 +33,7 @@ export default function Expenses() {
   const [items, setItems] = useState<Expense[]>([])
   const [showForm, setShowForm] = useState(false)
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
+  const [receiptPreviewOpen, setReceiptPreviewOpen] = useState(false)
   const [receiptName, setReceiptName] = useState('')
   const [scanning, setScanning] = useState(false)
   const [scanError, setScanError] = useState('')
@@ -76,6 +77,7 @@ export default function Expenses() {
   const selectReceipt = (file?: File) => {
     if (!file || !file.type.startsWith('image/')) return
     setReceiptName(file.name)
+    setReceiptPreviewOpen(false)
     setScan(null)
     setScanError('')
     const reader = new FileReader()
@@ -85,6 +87,7 @@ export default function Expenses() {
   }
 
   const clearReceipt = () => {
+    setReceiptPreviewOpen(false)
     setReceiptPreview(null)
     setReceiptName('')
     setScan(null)
@@ -148,7 +151,10 @@ export default function Expenses() {
           <div className="rounded-xl border border-dashed border-forest/30 bg-forest/5 p-3">
             <div className="flex items-start gap-3">
               {receiptPreview ? (
-                <img src={receiptPreview} alt="Preview struk" className="h-20 w-16 shrink-0 rounded-lg object-cover" />
+                <button type="button" onClick={() => setReceiptPreviewOpen(true)} className="group relative h-20 w-16 shrink-0 overflow-hidden rounded-lg outline-none focus:ring-2 focus:ring-forest/50" aria-label="Lihat struk">
+                  <img src={receiptPreview} alt="Preview struk" className="h-full w-full object-cover" />
+                  <span className="absolute inset-0 grid place-items-center bg-black/0 text-lg opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100">🔍</span>
+                </button>
               ) : (
                 <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded-lg bg-forest/10 text-2xl">🧾</div>
               )}
@@ -270,6 +276,12 @@ export default function Expenses() {
         onConfirm={confirmDeleteExpense}
         onCancel={() => setConfirmDelete(null)}
       />
+      {receiptPreviewOpen && receiptPreview && (
+        <div className="fixed inset-0 z-[110] grid place-items-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Preview struk" onClick={() => setReceiptPreviewOpen(false)}>
+          <button type="button" onClick={() => setReceiptPreviewOpen(false)} className="absolute right-4 top-4 rounded-full bg-white/15 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Tutup ✕</button>
+          <img src={receiptPreview} alt="Struk penuh" className="max-h-[85vh] max-w-full rounded-xl object-contain shadow-2xl" onClick={e => e.stopPropagation()} />
+        </div>
+      )}
     </Card>
   )
 }
