@@ -17,6 +17,7 @@ export default function Dashboard({ onNavigate }: Props) {
   const [plans, setPlans] = useState<Plan[]>([])
   const [income, setIncome] = useState<any[]>([])
   const [savings, setSavings] = useState<{ amount: number }[]>([])
+  const [savingsGoals, setSavingsGoals] = useState<{ target_amount: number }[]>([])
 
   useEffect(() => {
     getExpenses().then(setExpenses)
@@ -26,11 +27,13 @@ export default function Dashboard({ onNavigate }: Props) {
     getPlans().then(setPlans)
     supabase.from('income').select('*').then(({ data }) => setIncome(data || []))
     supabase.from('savings_deposits').select('amount').then(({ data }) => setSavings(data || []))
+    supabase.from('savings_goals').select('target_amount').then(({ data }) => setSavingsGoals(data || []))
   }, [])
 
   const expenseTotal = expenses.reduce((s, i) => s + Number(i.amount), 0)
   const incomeTotal = income.reduce((s, i) => s + Number(i.amount), 0)
   const savingsTotal = savings.reduce((s, i) => s + Number(i.amount), 0)
+  const savingsTarget = savingsGoals.reduce((s, i) => s + Number(i.target_amount), 0)
   const availableIncome = incomeTotal - savingsTotal
   const billUnpaid = bills.filter(i => !i.paid).reduce((s, i) => s + Number(i.amount), 0)
   const balance = availableIncome - expenseTotal - billUnpaid
@@ -98,10 +101,11 @@ export default function Dashboard({ onNavigate }: Props) {
           <Metric icon="📋" label="Tagihan belum bayar" value={fmt(billUnpaid)} tone="text-gold" surface="bg-amber-50 border-amber-200" />
           <Metric icon="💰" label="Sisa saldo" value={fmt(balance)} tone={balance >= 0 ? 'text-forest' : 'text-red-500'} surface={balance >= 0 ? 'bg-forest/8 border-forest/20' : 'bg-red-50 border-red-200'} />
         </div>
-        <button onClick={() => onNavigate('savings')} className="mt-3 flex w-full items-center gap-3 rounded-3xl border border-gold/35 bg-gradient-to-r from-gold/18 via-forest/12 to-forest-light/12 p-4 text-left shadow-lg shadow-gold/10 transition hover:border-gold/60 active:scale-[0.99]">
-          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gold/20 text-2xl">🎯</span>
-          <span className="min-w-0 flex-1"><span className="block text-sm font-black text-forest">Target Tabungan</span><span className="mt-0.5 block text-xs text-forest/60">Dana sudah disisihkan dari sisa saldo</span></span>
-          <span className="shrink-0 text-right"><span className="block text-base font-black text-gold">{fmt(savingsTotal)}</span><span className="text-[10px] font-semibold text-forest/55">Buka target ›</span></span>
+        <button onClick={() => onNavigate('savings')} className="relative mt-3 w-full overflow-hidden rounded-3xl border border-[#c4b5fd]/30 bg-[#15101d] p-4 text-left shadow-xl shadow-[#8b5cf6]/15 transition hover:border-[#c4b5fd]/55 active:scale-[0.99]">
+          <span className="pointer-events-none absolute -right-3 -top-5 text-7xl opacity-10">💎</span><span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_0%,rgba(196,181,253,.16),transparent_40%)]" />
+          <span className="relative flex items-center gap-3"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-[#c4b5fd]/25 bg-[#8b5cf6]/20 text-2xl">💎</span><span className="min-w-0 flex-1"><span className="block text-sm font-black text-[#f5f3ff]">Target Tabungan</span><span className="mt-0.5 block text-xs text-[#ddd6fe]/70">Dana aman, terpisah dari sisa saldo</span></span><span className="shrink-0 text-right"><span className="block text-base font-black text-[#e9d5ff]">{fmt(savingsTotal)}</span><span className="text-[10px] font-semibold text-[#ddd6fe]/55">Buka target ›</span></span></span>
+          <span className="relative mt-3 block h-1.5 overflow-hidden rounded-full bg-black/25"><span className="block h-full rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#e9d5ff]" style={{ width: `${savingsTarget ? Math.min(100, Math.round(savingsTotal / savingsTarget * 100)) : 0}%` }} /></span>
+          <span className="relative mt-1.5 flex justify-between text-[10px] text-[#ddd6fe]/55"><span>{savingsTarget ? `Target ${fmt(savingsTarget)}` : 'Buat target pertamamu'}</span><span>{savingsTarget ? `${Math.min(100, Math.round(savingsTotal / savingsTarget * 100))}%` : ''}</span></span>
         </button>
         <p className="mt-2 text-[11px] text-forest/45">Total pemasukan tetap utuh. Tabungan hanya mengurangi sisa saldo yang bisa dipakai.</p>
       </section>
