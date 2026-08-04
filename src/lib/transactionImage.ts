@@ -18,6 +18,26 @@ export async function compressImage(file: File): Promise<File> {
   return new File([blob], `${crypto.randomUUID()}.webp`, { type: 'image/webp' })
 }
 
+export async function prepareScanImage(file: File): Promise<File> {
+  const source = await createImageBitmap(file)
+  const size = Math.min(1600, Math.max(source.width, source.height))
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const context = canvas.getContext('2d')!
+  context.fillStyle = '#ffffff'
+  context.fillRect(0, 0, size, size)
+  const scale = Math.min(size / source.width, size / source.height)
+  const width = Math.round(source.width * scale)
+  const height = Math.round(source.height * scale)
+  context.drawImage(source, Math.round((size - width) / 2), Math.round((size - height) / 2), width, height)
+  source.close()
+  const blob = await new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob(result => result ? resolve(result) : reject(new Error('Gagal menyiapkan gambar scan')), 'image/jpeg', 0.92)
+  })
+  return new File([blob], 'receipt-scan.jpg', { type: 'image/jpeg' })
+}
+
 export async function uploadTransactionImage(file: File): Promise<string> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Silakan login kembali')

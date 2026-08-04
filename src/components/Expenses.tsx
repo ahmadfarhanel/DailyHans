@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { getExpenses, addExpense, deleteExpense, type Expense } from '../lib/db'
-import { Card, Input, Button, useForm, Badge, EmptyState } from './ui'
+import { Card, Input, CurrencyInput, Button, useForm, Badge, EmptyState } from './ui'
 import ConfirmDialog from './ConfirmDialog'
 import TransactionImage from './TransactionImage'
 import { jakartaToday } from '../lib/date'
-import { uploadTransactionImage } from '../lib/transactionImage'
+import { prepareScanImage, uploadTransactionImage } from '../lib/transactionImage'
 
 type ReceiptScan = {
   merchant: string
@@ -47,16 +47,17 @@ export default function Expenses() {
     setScanning(true)
     setScanError('')
     try {
+      const scanFile = await prepareScanImage(file)
       const imageBase64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader()
         reader.onerror = () => reject(new Error('Foto struk tidak bisa dibaca'))
         reader.onload = () => resolve(String(reader.result).split(',')[1] || '')
-        reader.readAsDataURL(file)
+        reader.readAsDataURL(scanFile)
       })
       const result = await fetch('/api/scan-receipt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64, mimeType: file.type }),
+        body: JSON.stringify({ imageBase64, mimeType: scanFile.type }),
       })
       const data = await result.json()
       if (!result.ok) throw new Error(data?.error || 'scan failed')
@@ -209,7 +210,7 @@ export default function Expenses() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Jumlah (Rp)" type="number" min="1" placeholder="50000" value={values.amount} onChange={set('amount')} required />
+            <CurrencyInput label="Jumlah" placeholder="25.000" value={values.amount} onValueChange={value => setValues({ ...values, amount: value })} required />
             <label className="block">
               <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Kategori</span>
               <select value={values.category} onChange={e => setValues({ ...values, category: e.target.value })}
@@ -247,21 +248,21 @@ export default function Expenses() {
         {items.map(i => {
           const cat = catInfo(i.category)
           return (
-            <div key={i.id} className="group flex items-center justify-between rounded-xl border border-forest/8 bg-white px-4 py-3 transition hover:bg-cream-dark hover:border-forest/12">
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+            <div key={i.id} className="group flex flex-col gap-3 rounded-xl border border-forest/8 bg-white px-3 py-3 transition hover:bg-cream-dark hover:border-forest/12 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+              <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
                 <TransactionImage path={i.receipt_path} alt={`Struk ${i.description || i.category}`} />
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-cream text-lg">{cat.icon}</div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-forest truncate">{i.description || i.category}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
+                  <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
                     <Badge variant={cat.color as any}>{label(i.category)}</Badge>
-                    {(i as any).added_by && <span className="text-[10px] text-forest/35 shrink-0">oleh {(i as any).added_by}</span>}
+                    {(i as any).added_by && <span className="text-[10px] text-forest/35">oleh {(i as any).added_by}</span>}
                     <span className="text-[10px] text-forest/30">{i.date}</span>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-3 shrink-0 ml-3">
-                <span className="font-semibold text-forest whitespace-nowrap">{fmt(i.amount)}</span>
+              <div className="flex w-full items-center justify-between gap-3 border-t border-forest/8 pt-2 sm:w-auto sm:justify-end sm:border-0 sm:pt-0">
+                <span className="text-sm font-semibold text-forest whitespace-nowrap">{fmt(i.amount)}</span>
                 <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)}>🗑️</Button>
               </div>
             </div>
@@ -292,9 +293,9 @@ export default function Expenses() {
         onCancel={() => setConfirmDelete(null)}
       />
       {receiptPreviewOpen && receiptPreview && (
-        <div className="fixed inset-0 z-[110] grid place-items-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Preview struk" onClick={() => setReceiptPreviewOpen(false)}>
-          <button type="button" onClick={() => setReceiptPreviewOpen(false)} className="absolute right-4 top-4 rounded-full bg-white/15 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Tutup ✕</button>
-          <img src={receiptPreview} alt="Struk penuh" className="max-h-[85vh] max-w-full rounded-xl object-contain shadow-2xl" onClick={e => e.stopPropagation()} />
+        <div className="fixed inset-0 z-[110] grid cursor-zoom-out place-items-center bg-black/80 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-label="Preview struk" onClick={() => setReceiptPreviewOpen(false)}>
+          <button type="button" onClick={() => setReceiptPreviewOpen(false)} className="absolute right-4 top-4 z-10 rounded-full bg-white/15 px-3 py-1.5 text-sm font-semibold text-white hover:bg-white/25">Tutup ✕</button>
+          <img src={receiptPreview} alt="Struk penuh" className="max-h-[85vh] max-w-full cursor-zoom-out rounded-xl object-contain shadow-2xl" />
         </div>
       )}
     </Card>

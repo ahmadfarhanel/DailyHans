@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import { Card, Input, Button, useForm, Badge, EmptyState } from './ui'
+import { Card, Input, CurrencyInput, Button, useForm, Badge, EmptyState } from './ui'
 import ConfirmDialog from './ConfirmDialog'
 import { jakartaToday } from '../lib/date'
 import TransactionImage from './TransactionImage'
@@ -120,7 +120,7 @@ export default function IncomeTab() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <Input label="Jumlah (Rp)" type="number" min="1" placeholder="5000000" value={values.amount} onChange={set('amount')} required />
+            <CurrencyInput label="Jumlah" placeholder="5.000.000" value={values.amount} onValueChange={value => setValues({ ...values, amount: value })} required />
             <label className="block">
               <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Sumber</span>
               <select value={values.source} onChange={e => setValues({ ...values, source: e.target.value })}
@@ -156,9 +156,10 @@ export default function IncomeTab() {
 
       <div className="space-y-2">
         {items.map(i => (
-          <div key={i.id} className="group flex items-center gap-3 rounded-xl border border-forest/8 bg-white px-4 py-3 transition hover:bg-cream-dark">
-            <TransactionImage path={i.receipt_path} alt={`Bukti ${i.description || i.source}`} />
-            <div className="min-w-0 flex-1">
+          <div key={i.id} className="group flex flex-col gap-3 rounded-xl border border-forest/8 bg-white px-3 py-3 transition hover:bg-cream-dark sm:flex-row sm:items-center sm:px-4">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3">
+              <TransactionImage path={i.receipt_path} alt={`Bukti ${i.description || i.source}`} />
+              <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-forest">{i.description || label(i.source)}</p>
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
                 <Badge variant="success">{label(i.source)}</Badge>
@@ -166,8 +167,9 @@ export default function IncomeTab() {
                 <span className="text-[10px] text-forest/30">{i.date}</span>
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-2">
-              <span className="max-w-24 truncate text-sm font-semibold text-emerald-600 sm:max-w-none">+{fmt(i.amount)}</span>
+            </div>
+            <div className="flex w-full items-center justify-between gap-3 border-t border-forest/8 pt-2 sm:w-auto sm:justify-end sm:border-0 sm:pt-0">
+              <span className="text-sm font-semibold text-emerald-600 whitespace-nowrap">+{fmt(i.amount)}</span>
               <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)}>🗑️</Button>
             </div>
           </div>
@@ -188,9 +190,9 @@ export default function IncomeTab() {
 
       {/* Confirm Delete */}
       {receiptPreviewOpen && receiptPreview && (
-        <div className="fixed inset-0 z-[110] grid place-items-center bg-black/80 p-4 backdrop-blur-sm" onClick={() => setReceiptPreviewOpen(false)}>
-          <button type="button" onClick={() => setReceiptPreviewOpen(false)} className="absolute right-4 top-4 rounded-full bg-white/15 px-3 py-1.5 text-sm font-semibold text-white">Tutup ✕</button>
-          <img src={receiptPreview} alt="Bukti pemasukan penuh" className="max-h-[85vh] max-w-full rounded-xl object-contain shadow-2xl" onClick={e => e.stopPropagation()} />
+        <div className="fixed inset-0 z-[110] grid cursor-zoom-out place-items-center bg-black/80 p-4 backdrop-blur-sm" onClick={() => setReceiptPreviewOpen(false)}>
+          <button type="button" onClick={() => setReceiptPreviewOpen(false)} className="absolute right-4 top-4 z-10 rounded-full bg-white/15 px-3 py-1.5 text-sm font-semibold text-white">Tutup ✕</button>
+          <img src={receiptPreview} alt="Bukti pemasukan penuh" className="max-h-[85vh] max-w-full cursor-zoom-out rounded-xl object-contain shadow-2xl" />
         </div>
       )}
 

@@ -9,6 +9,19 @@ export function Input({ label, className = '', ...props }: React.InputHTMLAttrib
   )
 }
 
+export function CurrencyInput({ label = 'Jumlah (Rp)', value, onValueChange, ...props }: Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange' | 'type'> & { label?: string; value: string; onValueChange: (value: string) => void }) {
+  const display = value ? Number(value.replace(/\D/g, '')).toLocaleString('id-ID') : ''
+  return (
+    <label className="block group">
+      <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">{label}</span>
+      <div className="flex rounded-xl border border-forest/15 bg-white focus-within:border-forest/40 focus-within:ring-2 focus-within:ring-forest/10">
+        <span className="grid place-items-center border-r border-forest/10 px-3 text-sm font-semibold text-forest/50">Rp</span>
+        <input {...props} type="text" inputMode="numeric" value={display} onChange={e => onValueChange(e.target.value.replace(/\D/g, ''))} className="min-w-0 flex-1 rounded-r-xl bg-transparent px-3 py-2.5 text-sm text-forest outline-none placeholder:text-forest/30" />
+      </div>
+    </label>
+  )
+}
+
 export function Button({ variant = 'primary', size = 'md', className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'danger' | 'success'; size?: 'sm' | 'md' | 'lg' }) {
   const variants = {
     primary: 'bg-gradient-to-r from-forest to-forest-light text-cream shadow-lg shadow-forest/25 hover:shadow-forest/40 active:scale-[0.98]',
