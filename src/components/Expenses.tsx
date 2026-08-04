@@ -4,6 +4,15 @@ import { Card, Input, Button, useForm, Badge, EmptyState } from './ui'
 import ConfirmDialog from './ConfirmDialog'
 import { jakartaToday } from '../lib/date'
 
+type ReceiptScan = {
+  merchant: string
+  amount: number | null
+  date: string | null
+  category: 'makanan' | 'transport' | 'rumah' | 'belanja' | 'hiburan' | 'kesehatan' | 'tagihan' | 'lainnya'
+  description: string
+  confidence: number
+}
+
 const CATS = [
   { id: 'makanan', icon: '🍜', color: 'warning' },
   { id: 'transport', icon: '🚗', color: 'info' },
@@ -22,7 +31,67 @@ const fmt = (n: number) => n.toLocaleString('id-ID', { style: 'currency', curren
 export default function Expenses() {
   const [items, setItems] = useState<Expense[]>([])
   const [showForm, setShowForm] = useState(false)
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
+  const [receiptName, setReceiptName] = useState('')
+  const [receiptFile, setReceiptFile] = useState<File | null>(null)
+  const [scanning, setScanning] = useState(false)
+  const [scanError, setScanError] = useState('')
+  const [scan, setScan] = useState<ReceiptScan | null>(null)
   const { values, setValues, set, reset } = useForm({ amount: '', category: 'makanan', description: '', added_by: '', date: jakartaToday() })
+
+  const selectReceipt = (file?: File) => {
+    if (!file || !file.type.startsWith('image/')) return
+    setReceiptFile(file)
+    setReceiptName(file.name)
+    setScan(null)
+    setScanError('')
+    const reader = new FileReader()
+    reader.onload = () => setReceiptPreview(String(reader.result))
+    reader.readAsDataURL(file)
+  }
+
+  const runOcr = async () => {
+    if (!receiptFile) return
+    setScanning(true)
+    setScanError('')
+    try {
+      const imageBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onerror = () => reject(new Error('Foto struk tidak bisa dibaca'))
+        reader.onload = () => resolve(String(reader.result).split(',')[1] || '')
+        reader.readAsDataURL(receiptFile)
+      })
+      const result = await fetch('/api/scan-receipt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64, mimeType: receiptFile.type }),
+      })
+      const data = await result.json()
+      if (!result.ok) throw new Error(data?.error || 'scan failed')
+      const parsed = data as ReceiptScan
+      setScan(parsed)
+      setValues({
+        ...values,
+        amount: parsed.amount ? String(parsed.amount) : values.amount,
+        category: parsed.category,
+        description: parsed.description || parsed.merchant || values.description,
+        date: parsed.date || values.date,
+      })
+    } catch (error) {
+      console.error('receipt OCR failed', error)
+      setScanError('Scan gagal. Coba foto lebih dekat, terang, dan struk lurus.')
+    } finally {
+      setScanning(false)
+    }
+  }
+
+  const clearReceipt = () => {
+    setReceiptPreview(null)
+    setReceiptFile(null)
+    setReceiptName('')
+    setScan(null)
+    setScanError('')
+  }
 
   // Confirmation state
   const [confirmAdd, setConfirmAdd] = useState<{ amount: number; category: string; description: string; added_by: string; date: string } | null>(null)
@@ -78,6 +147,55 @@ export default function Expenses() {
 
       {showForm ? (
         <form onSubmit={submit} className="mb-5 space-y-3 rounded-xl border border-forest/8 bg-cream p-4">
+          <div className="rounded-xl border border-dashed border-forest/30 bg-forest/5 p-3">
+            <div className="flex items-start gap-3">
+              {receiptPreview ? (
+                <img src={receiptPreview} alt="Preview struk" className="h-20 w-16 shrink-0 rounded-lg object-cover" />
+              ) : (
+                <div className="flex h-20 w-16 shrink-0 items-center justify-center rounded-lg bg-forest/10 text-2xl">🧾</div>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-forest">Scan struk</p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-forest/55">
+                  OCR gratis berjalan di HP/browser. Baca total, tanggal, dan toko; kategori dipilih dari kata di struk.
+                </p>
+                {receiptName && <p className="mt-1 truncate text-[10px] text-forest/50">{receiptName}</p>}
+                <div className="mt-2 flex gap-2">
+                  <label className="cursor-pointer rounded-lg bg-forest px-3 py-1.5 text-xs font-semibold text-cream transition hover:bg-forest-light">
+                    📷 Kamera
+                    <input className="sr-only" type="file" accept="image/*" capture="environment" onChange={e => selectReceipt(e.target.files?.[0])} />
+                  </label>
+                  <label className="cursor-pointer rounded-lg border border-forest/20 px-3 py-1.5 text-xs font-semibold text-forest/75 transition hover:bg-forest/10">
+                    Galeri
+                    <input className="sr-only" type="file" accept="image/*" onChange={e => selectReceipt(e.target.files?.[0])} />
+                  </label>
+                  {receiptPreview && (
+                    <>
+                      <button type="button" onClick={runOcr} disabled={scanning}
+                        className="rounded-lg border border-gold/30 bg-gold/10 px-3 py-1.5 text-xs font-semibold text-forest transition hover:bg-gold/20 disabled:opacity-50">
+                        {scanning ? 'Membaca...' : '✨ Baca OCR'}
+                      </button>
+                      <button type="button" onClick={clearReceipt} className="px-2 text-xs text-red-500 hover:text-red-400">Hapus</button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+            {scanning && (
+              <div className="mt-3 rounded-lg bg-gold/10 px-3 py-2 text-[11px] text-forest/70">
+                Membaca struk di perangkat… pertama kali bisa lebih lama karena model OCR diunduh.
+              </div>
+            )}
+            {scan && !scanning && (
+              <div className="mt-3 rounded-lg border border-forest/15 bg-forest/8 px-3 py-2 text-[11px] text-forest/75">
+                <p className="font-semibold">OCR selesai • keyakinan {scan.confidence}%</p>
+                <p className="mt-1">Toko: {scan.merchant || '-'} • Total: {scan.amount ? fmt(scan.amount) : '-'} • Kategori: {scan.category}</p>
+                <p className="mt-1 text-forest/50">Cek kembali hasil sebelum simpan.</p>
+              </div>
+            )}
+            {scanError && <p className="mt-3 text-[11px] text-red-500">{scanError}</p>}
+          </div>
+
           <div className="grid grid-cols-2 gap-3">
             <Input label="Jumlah (Rp)" type="number" min="1" placeholder="50000" value={values.amount} onChange={set('amount')} required />
             <label className="block">
