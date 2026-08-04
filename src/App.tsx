@@ -11,8 +11,10 @@ import Bills from './components/Bills'
 import Plans from './components/Plans'
 import Notifications, { AlertBanner } from './components/Notifications'
 import Profile from './components/Profile'
+import WeddingPlanner from './components/WeddingPlanner'
+import WeddingGuests from './components/WeddingGuests'
 
-type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills' | 'plans'
+type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills' | 'plans' | 'wedding'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: '🏠' },
@@ -22,12 +24,14 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'shopping', label: 'Belanja', icon: '🛒' },
   { id: 'bills', label: 'Tagihan', icon: '📋' },
   { id: 'plans', label: 'Rencana', icon: '🗺️' },
+  { id: 'wedding', label: 'Wedding', icon: '💍' },
 ]
 
 const MOBILE_GROUPS = [
   { id: 'home', label: 'Beranda', icon: '🏠', tabs: ['dashboard'] as Tab[] },
   { id: 'finance', label: 'Keuangan', icon: '💗', tabs: ['expenses', 'income', 'bills'] as Tab[] },
   { id: 'homecare', label: 'Rumah', icon: '⌂', tabs: ['chores', 'shopping', 'plans'] as Tab[] },
+  { id: 'wedding', label: 'Wedding', icon: '💍', tabs: ['wedding'] as Tab[] },
 ] as const
 
 type MobileGroup = typeof MOBILE_GROUPS[number]['id']
@@ -125,6 +129,7 @@ export default function App() {
   const [tab, setTab] = useState<Tab>('dashboard')
   const [alerts, setAlerts] = useState<BillAlert[]>([])
   const [showProfile, setShowProfile] = useState(false)
+  const [weddingView, setWeddingView] = useState<'planner' | 'guests'>('planner')
 
   useEffect(() => {
     getBillAlerts().then(setAlerts)
@@ -227,6 +232,13 @@ export default function App() {
           {tab === 'shopping' && <Shopping />}
           {tab === 'bills' && <Bills />}
           {tab === 'plans' && <Plans />}
+          {tab === 'wedding' && <>
+            <div className="mb-5 flex gap-2 overflow-x-auto rounded-2xl border border-forest/10 bg-white/70 p-1.5">
+              <button type="button" onClick={() => setWeddingView('planner')} className={`shrink-0 rounded-xl px-4 py-2 text-sm font-semibold ${weddingView === 'planner' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60'}`}>💍 Planner</button>
+              <button type="button" onClick={() => setWeddingView('guests')} className={`shrink-0 rounded-xl px-4 py-2 text-sm font-semibold ${weddingView === 'guests' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60'}`}>👥 Daftar Tamu</button>
+            </div>
+            {weddingView === 'planner' ? <WeddingPlanner /> : <WeddingGuests />}
+          </>}
         </div>
       </main>
 
