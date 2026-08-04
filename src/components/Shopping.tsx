@@ -61,7 +61,7 @@ export default function Shopping() {
         <Button onClick={() => setShowForm(true)} className="mb-5 w-full">+ Tambah Item</Button>
       )}
 
-      <div className="space-y-2">
+      <div className="max-h-[26rem] space-y-2 overflow-y-auto pr-1">
         {items.map(i => (
           <div key={i.id} className={`group flex items-center justify-between rounded-xl border px-4 py-3 transition ${i.bought ? 'border-forest/5 bg-cream/50' : 'border-forest/8 bg-white hover:bg-cream-dark'}`}>
             <label className="flex items-center gap-3 cursor-pointer">

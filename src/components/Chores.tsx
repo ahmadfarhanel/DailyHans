@@ -79,7 +79,7 @@ export default function Chores() {
         <Button onClick={() => setShowForm(true)} className="mb-5 w-full">+ Tambah Tugas</Button>
       )}
 
-      <div className="space-y-2">
+      <div className="max-h-[26rem] space-y-2 overflow-y-auto pr-1">
         {items.map(i => (
           <div key={i.id} className={`flex items-center justify-between rounded-xl border px-4 py-3 transition ${i.done ? 'border-forest/8 bg-cream/50' : 'border-forest/8 bg-white'}`}>
             <div className="flex items-center gap-3 min-w-0 flex-1">

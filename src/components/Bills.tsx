@@ -101,7 +101,7 @@ export default function Bills() {
         <Button onClick={() => setShowForm(true)} className="mb-5 w-full">+ Tambah Tagihan</Button>
       )}
 
-      <div className="space-y-2">
+      <div className="max-h-[26rem] space-y-2 overflow-y-auto pr-1">
         {items.map(i => {
           const overdue = !i.paid && new Date(i.due_date) < new Date()
           return (

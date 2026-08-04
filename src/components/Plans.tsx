@@ -210,7 +210,7 @@ export default function Plans() {
       )}
 
       {/* List Items */}
-      <div className="space-y-3">
+      <div className="max-h-[26rem] space-y-3 overflow-y-auto pr-1">
         {filteredItems.map(i => {
           const badgeVariant =
             i.status === 'selesai' ? 'success' : i.status === 'dibatalkan' ? 'default' : 'info'

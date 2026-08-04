@@ -244,7 +244,7 @@ export default function Expenses() {
         <Button onClick={() => setShowForm(true)} className="mb-5 w-full">+ Tambah Pengeluaran</Button>
       )}
 
-      <div className="space-y-2">
+      <div className="max-h-[26rem] space-y-2 overflow-y-auto pr-1">
         {items.map(i => {
           const cat = catInfo(i.category)
           return (
