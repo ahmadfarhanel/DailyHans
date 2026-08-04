@@ -44,3 +44,24 @@ body {
 
 ::selection { background: #f062ad; color: #09070b; }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(3) hue-rotate(285deg); }
+
+/* Native select stays accessible; custom arrow and touch target improve mobile. */
+select {
+  appearance: none;
+  min-height: 44px;
+  padding-right: 2.75rem !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f7b2d9' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-position: right 0.9rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  touch-action: manipulation;
+}
+
+select option {
+  background: #1b141f;
+  color: #f7b2d9;
+}
+
+@media (max-width: 640px) {
+  select { font-size: 16px !important; }
+}
