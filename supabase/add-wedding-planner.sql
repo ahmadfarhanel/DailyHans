@@ -49,6 +49,17 @@ create table if not exists wedding_guests (
   created_at timestamptz default now()
 );
 
+alter table wedding_guests add column if not exists phone text default '' check (char_length(phone) <= 30);
+
+create table if not exists wedding_needs (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  title text not null check (char_length(title) <= 160),
+  amount numeric(12,2) not null default 0 check (amount >= 0),
+  note text default '',
+  created_at timestamptz default now()
+);
+
 create table if not exists wedding_timeline (
   id uuid primary key default uuid_generate_v4(),
   user_id uuid not null references auth.users(id) on delete cascade,

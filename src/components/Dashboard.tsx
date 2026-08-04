@@ -68,7 +68,7 @@ export default function Dashboard({ onNavigate }: Props) {
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-xs text-forest/50">Sisa saldo aman</p>
-                <p className={`mt-1 truncate text-3xl font-black ${balance >= 0 ? 'text-forest' : 'text-red-500'}`}>{fmt(balance)}</p>
+                <p className={`mt-1 max-w-full break-words text-[clamp(1.45rem,8vw,2.25rem)] font-black leading-tight tracking-tight ${balance >= 0 ? 'text-forest' : 'text-red-500'}`}>{fmt(balance)}</p>
               </div>
               <span className={`rounded-full px-3 py-1 text-xs font-bold ${balance >= 0 ? 'bg-forest/12 text-forest' : 'bg-red-50 text-red-500'}`}>{balance >= 0 ? 'Aman' : 'Minus'}</span>
             </div>
@@ -118,7 +118,7 @@ export default function Dashboard({ onNavigate }: Props) {
       </div>
 
       <Card title="Aktivitas Terbaru" icon="🕐">
-        <div className="space-y-2.5">
+        <div className="max-h-[24rem] space-y-2.5 overflow-y-auto pr-1">
           {activity.map(item => (
             <div key={item.id} className="flex items-center gap-3 rounded-2xl border border-forest/8 bg-cream/55 px-3 py-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-forest/8 text-base">{item.icon}</span>
@@ -149,7 +149,7 @@ export default function Dashboard({ onNavigate }: Props) {
 function Metric({ icon, label, value, tone, surface }: { icon: string; label: string; value: string; tone: string; surface: string }) {
   return <div className={`min-w-0 rounded-3xl border p-3 shadow-lg shadow-forest/5 sm:p-4 ${surface}`}>
     <div className="flex items-start gap-2"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-black/10 text-base">{icon}</span><span className="pt-0.5 text-[11px] font-bold leading-tight text-forest/70 sm:text-xs">{label}</span></div>
-    <p className={`mt-3 truncate text-base font-black tracking-tight sm:text-lg ${tone}`}>{value}</p>
+    <p className={`mt-3 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-[clamp(.8rem,3.5vw,1.125rem)] font-black tracking-tight ${tone}`} title={value}>{value}</p>
   </div>
 }
 

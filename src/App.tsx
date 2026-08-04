@@ -233,9 +233,12 @@ export default function App() {
           {tab === 'bills' && <Bills />}
           {tab === 'plans' && <Plans />}
           {tab === 'wedding' && <>
-            <div className="mb-5 flex gap-2 overflow-x-auto rounded-2xl border border-forest/10 bg-white/70 p-1.5">
-              <button type="button" onClick={() => setWeddingView('planner')} className={`shrink-0 rounded-xl px-4 py-2 text-sm font-semibold ${weddingView === 'planner' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60'}`}>💍 Planner</button>
-              <button type="button" onClick={() => setWeddingView('guests')} className={`shrink-0 rounded-xl px-4 py-2 text-sm font-semibold ${weddingView === 'guests' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60'}`}>👥 Daftar Tamu</button>
+            <div className="relative mb-5 overflow-hidden rounded-3xl border border-forest/15 bg-gradient-to-r from-[#31182a] via-[#1d1321] to-[#0d0a10] p-1.5 shadow-xl shadow-forest/10">
+              <div className="pointer-events-none absolute -right-6 -top-8 text-7xl opacity-10">💍</div>
+              <div className="relative flex gap-2 overflow-x-auto">
+                <button type="button" onClick={() => setWeddingView('planner')} className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${weddingView === 'planner' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60 hover:bg-cream/40'}`}><span className="text-lg">💍</span><span><span className="block">Planner</span><span className="block text-[10px] font-medium opacity-65">Acara & budget</span></span></button>
+                <button type="button" onClick={() => setWeddingView('guests')} className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${weddingView === 'guests' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60 hover:bg-cream/40'}`}><span className="text-lg">👥</span><span><span className="block">Daftar Tamu</span><span className="block text-[10px] font-medium opacity-65">RSVP & pax</span></span></button>
+              </div>
             </div>
             {weddingView === 'planner' ? <WeddingPlanner /> : <WeddingGuests />}
           </>}
