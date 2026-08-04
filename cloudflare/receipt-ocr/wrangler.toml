@@ -1,0 +1,17 @@
+name = "dailykaoayy-receipt-ocr"
+main = "src/index.js"
+compatibility_date = "2026-08-04"
+
+[ai]
+binding = "AI"
+
+[vars]
+ALLOWED_ORIGIN = "https://daily-hans.vercel.app"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# Set SCAN_SECRET with: npx wrangler secret put SCAN_SECRET
+# Never expose this value to the browser.
+# AI binding uses @cf/llava-hf/llava-1.5-7b-hf.
