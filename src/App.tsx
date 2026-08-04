@@ -24,6 +24,17 @@ const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'plans', label: 'Rencana', icon: '🗺️' },
 ]
 
+const MOBILE_GROUPS = [
+  { id: 'home', label: 'Beranda', icon: '🏠', tabs: ['dashboard'] as Tab[] },
+  { id: 'finance', label: 'Keuangan', icon: '💗', tabs: ['expenses', 'income', 'bills'] as Tab[] },
+  { id: 'homecare', label: 'Rumah', icon: '⌂', tabs: ['chores', 'shopping', 'plans'] as Tab[] },
+] as const
+
+type MobileGroup = typeof MOBILE_GROUPS[number]['id']
+
+const groupForTab = (tab: Tab): MobileGroup =>
+  MOBILE_GROUPS.find(group => group.tabs.includes(tab))?.id ?? 'home' 
+
 function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -102,7 +113,7 @@ function Login() {
         </form>
 
         <p className="mt-6 text-center text-xs text-forest/30">
-          Dibuat dengan ❤️ untuk keluarga Indonesia
+          Untuk kesayangan ❤️
         </p>
       </div>
     </div>
@@ -219,17 +230,32 @@ export default function App() {
         </div>
       </main>
 
-      {/* ── MOBILE BOTTOM NAV (hidden on md+) ── */}
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-forest/8 bg-cream md:hidden">
-        {TABS.map(t => {
-          const active = tab === t.id
+      {/* ── MOBILE: category switcher + grouped bottom nav ── */}
+      <div className="fixed inset-x-0 bottom-[65px] z-40 border-t border-forest/15 bg-cream/95 px-3 py-2 backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-md gap-2 overflow-x-auto">
+          {(MOBILE_GROUPS.find(group => group.id === groupForTab(tab))?.tabs ?? []).map(id => {
+            const item = TABS.find(candidate => candidate.id === id)!
+            const active = tab === id
+            return (
+              <button key={id} onClick={() => setTab(id)}
+                className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition ${active ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'bg-forest/8 text-forest/65'}`}>
+                {item.icon} {item.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex border-t border-forest/15 bg-cream/95 px-3 py-2 backdrop-blur md:hidden">
+        {MOBILE_GROUPS.map(group => {
+          const active = group.id === groupForTab(tab)
+          const target = active ? tab : group.tabs[0]
           return (
-            <button key={t.id} onClick={() => setTab(t.id)}
-              className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[10px] font-medium transition-all ${active ? 'text-forest' : 'text-forest/40'}`}>
-              <span className={`flex h-8 w-8 items-center justify-center rounded-xl text-lg transition-all ${active ? 'bg-forest/10 scale-110' : ''}`}>
-                {t.icon}
+            <button key={group.id} onClick={() => setTab(target)}
+              className={`flex flex-1 flex-col items-center gap-0.5 py-1 text-[10px] font-semibold transition ${active ? 'text-forest' : 'text-forest/45'}`}>
+              <span className={`flex h-9 w-9 items-center justify-center rounded-xl text-lg transition-all ${active ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'bg-forest/8'}`}>
+                {group.icon}
               </span>
-              <span className="leading-none">{t.label}</span>
+              <span className="leading-none">{group.label}</span>
             </button>
           )
         })}

@@ -2,11 +2,45 @@
 
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --color-cream: #faf9f6;
-  --color-cream-dark: #f5f3ed;
-  --color-forest: #1a4d2e;
-  --color-forest-light: #2d6a4f;
-  --color-forest-dark: #143d24;
-  --color-gold: #c9a227;
-  --color-gold-light: #e6c547;
+
+  /* Soft BlackPink theme: black base, rose accent, low eye strain */
+  --color-cream: #120d14;
+  --color-cream-dark: #09070b;
+  --color-forest: #f7b2d9;
+  --color-forest-light: #f062ad;
+  --color-forest-dark: #8f2d63;
+  --color-gold: #c77dff;
+  --color-gold-light: #f0abfc;
 }
+
+@layer utilities {
+  .bg-white { background-color: #1b141f !important; }
+  .bg-white\/80 { background-color: rgb(27 20 31 / .82) !important; }
+  .bg-white\/90 { background-color: rgb(27 20 31 / .92) !important; }
+
+  .bg-red-50 { background-color: #2a121d !important; }
+  .bg-red-100\/50 { background-color: rgb(74 20 45 / .5) !important; }
+  .bg-amber-50 { background-color: #25182a !important; }
+  .bg-sky-50, .bg-blue-50 { background-color: #171427 !important; }
+  .bg-emerald-50 { background-color: #10251e !important; }
+
+  .text-amber-700, .text-amber-800 { color: #f0abfc !important; }
+  .text-red-500, .text-red-600 { color: #fb7185 !important; }
+  .text-sky-600, .text-sky-700 { color: #c4b5fd !important; }
+  .text-emerald-500, .text-emerald-600, .text-emerald-700 { color: #86efac !important; }
+
+  .border-red-200 { border-color: rgb(251 113 133 / .32) !important; }
+  .border-amber-200 { border-color: rgb(240 171 252 / .28) !important; }
+  .border-sky-200, .border-blue-200 { border-color: rgb(196 181 253 / .28) !important; }
+  .border-emerald-200 { border-color: rgb(134 239 172 / .25) !important; }
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgb(240 98 173 / .14), transparent 28rem),
+    radial-gradient(circle at bottom right, rgb(199 125 255 / .10), transparent 24rem),
+    #09070b;
+}
+
+::selection { background: #f062ad; color: #09070b; }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(3) hue-rotate(285deg); }
