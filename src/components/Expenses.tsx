@@ -27,31 +27,19 @@ const CATS = [
 const MEMBERS = ['Papa', 'Mama', 'Anak', 'Lainnya']
 
 const fmt = (n: number) => n.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
+const label = (value: string) => value ? value[0].toUpperCase() + value.slice(1) : '-'
 
 export default function Expenses() {
   const [items, setItems] = useState<Expense[]>([])
   const [showForm, setShowForm] = useState(false)
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null)
   const [receiptName, setReceiptName] = useState('')
-  const [receiptFile, setReceiptFile] = useState<File | null>(null)
   const [scanning, setScanning] = useState(false)
   const [scanError, setScanError] = useState('')
   const [scan, setScan] = useState<ReceiptScan | null>(null)
   const { values, setValues, set, reset } = useForm({ amount: '', category: 'makanan', description: '', added_by: '', date: jakartaToday() })
 
-  const selectReceipt = (file?: File) => {
-    if (!file || !file.type.startsWith('image/')) return
-    setReceiptFile(file)
-    setReceiptName(file.name)
-    setScan(null)
-    setScanError('')
-    const reader = new FileReader()
-    reader.onload = () => setReceiptPreview(String(reader.result))
-    reader.readAsDataURL(file)
-  }
-
-  const runOcr = async () => {
-    if (!receiptFile) return
+  const scanReceipt = async (file: File) => {
     setScanning(true)
     setScanError('')
     try {
@@ -59,12 +47,12 @@ export default function Expenses() {
         const reader = new FileReader()
         reader.onerror = () => reject(new Error('Foto struk tidak bisa dibaca'))
         reader.onload = () => resolve(String(reader.result).split(',')[1] || '')
-        reader.readAsDataURL(receiptFile)
+        reader.readAsDataURL(file)
       })
       const result = await fetch('/api/scan-receipt', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ imageBase64, mimeType: receiptFile.type }),
+        body: JSON.stringify({ imageBase64, mimeType: file.type }),
       })
       const data = await result.json()
       if (!result.ok) throw new Error(data?.error || 'scan failed')
@@ -85,9 +73,19 @@ export default function Expenses() {
     }
   }
 
+  const selectReceipt = (file?: File) => {
+    if (!file || !file.type.startsWith('image/')) return
+    setReceiptName(file.name)
+    setScan(null)
+    setScanError('')
+    const reader = new FileReader()
+    reader.onload = () => setReceiptPreview(String(reader.result))
+    reader.readAsDataURL(file)
+    void scanReceipt(file)
+  }
+
   const clearReceipt = () => {
     setReceiptPreview(null)
-    setReceiptFile(null)
     setReceiptName('')
     setScan(null)
     setScanError('')
@@ -157,7 +155,7 @@ export default function Expenses() {
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-forest">Scan struk</p>
                 <p className="mt-0.5 text-[11px] leading-relaxed text-forest/55">
-                  OCR gratis berjalan di HP/browser. Baca total, tanggal, dan toko; kategori dipilih dari kata di struk.
+                  Pilih foto. AI otomatis membaca total, tanggal, toko, dan kategori.
                 </p>
                 {receiptName && <p className="mt-1 truncate text-[10px] text-forest/50">{receiptName}</p>}
                 <div className="mt-2 flex gap-2">
@@ -170,13 +168,7 @@ export default function Expenses() {
                     <input className="sr-only" type="file" accept="image/*" onChange={e => selectReceipt(e.target.files?.[0])} />
                   </label>
                   {receiptPreview && (
-                    <>
-                      <button type="button" onClick={runOcr} disabled={scanning}
-                        className="rounded-lg border border-gold/30 bg-gold/10 px-3 py-1.5 text-xs font-semibold text-forest transition hover:bg-gold/20 disabled:opacity-50">
-                        {scanning ? 'Membaca...' : '✨ Baca OCR'}
-                      </button>
-                      <button type="button" onClick={clearReceipt} className="px-2 text-xs text-red-500 hover:text-red-400">Hapus</button>
-                    </>
+                    <button type="button" onClick={clearReceipt} className="px-2 text-xs text-red-500 hover:text-red-400">Hapus</button>
                   )}
                 </div>
               </div>
@@ -189,7 +181,7 @@ export default function Expenses() {
             {scan && !scanning && (
               <div className="mt-3 rounded-lg border border-forest/15 bg-forest/8 px-3 py-2 text-[11px] text-forest/75">
                 <p className="font-semibold">OCR selesai • keyakinan {scan.confidence}%</p>
-                <p className="mt-1">Toko: {scan.merchant || '-'} • Total: {scan.amount ? fmt(scan.amount) : '-'} • Kategori: {scan.category}</p>
+                <p className="mt-1">Toko: {scan.merchant || '-'} • Total: {scan.amount ? fmt(scan.amount) : '-'} • Kategori: {label(scan.category)}</p>
                 <p className="mt-1 text-forest/50">Cek kembali hasil sebelum simpan.</p>
               </div>
             )}
@@ -202,7 +194,7 @@ export default function Expenses() {
               <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Kategori</span>
               <select value={values.category} onChange={e => setValues({ ...values, category: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
-                {CATS.map(c => <option key={c.id} value={c.id}>{c.icon} {c.id}</option>)}
+                {CATS.map(c => <option key={c.id} value={c.id}>{c.icon} {label(c.id)}</option>)}
               </select>
             </label>
           </div>
@@ -241,7 +233,7 @@ export default function Expenses() {
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium text-forest truncate">{i.description || i.category}</p>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <Badge variant={cat.color as any}>{i.category}</Badge>
+                    <Badge variant={cat.color as any}>{label(i.category)}</Badge>
                     {(i as any).added_by && <span className="text-[10px] text-forest/35 shrink-0">oleh {(i as any).added_by}</span>}
                     <span className="text-[10px] text-forest/30">{i.date}</span>
                   </div>
@@ -261,7 +253,7 @@ export default function Expenses() {
       <ConfirmDialog
         open={!!confirmAdd}
         title="Konfirmasi Tambah Pengeluaran"
-        message={`Kategori: ${confirmAdd?.category}\nJumlah: ${fmt(confirmAdd?.amount || 0)}\nDeskripsi: ${confirmAdd?.description || '-'}\nTanggal: ${confirmAdd?.date}\nDitambahkan oleh: ${confirmAdd?.added_by || '-'}`}
+        message={`Kategori: ${label(confirmAdd?.category || '')}\nJumlah: ${fmt(confirmAdd?.amount || 0)}\nDeskripsi: ${confirmAdd?.description || '-'}\nTanggal: ${confirmAdd?.date}\nDitambahkan oleh: ${confirmAdd?.added_by || '-'}`}
         confirmLabel="Ya, Tambah"
         variant="info"
         onConfirm={confirmAddExpense}

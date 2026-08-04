@@ -42,9 +42,17 @@ export default {
         return Response.json({ error: 'imageBase64 wajib ada' }, { status: 400, headers })
       }
 
-      const prompt = `Read this Indonesian receipt. Return JSON only, no markdown:
-{"merchant":"store name or empty","amount":total paid integer rupiah or null,"date":"YYYY-MM-DD" or null,"category":"makanan|transport|rumah|belanja|hiburan|kesehatan|tagihan|lainnya","description":"brief Indonesian transaction description","confidence":0-100}
-Use TOTAL, GRAND TOTAL, TOTAL BAYAR, JUMLAH as amount. Ignore cash, change, tax, discount, subtotal when paid total exists.`
+      const prompt = `Read this Indonesian receipt/order screenshot. Return JSON only, no markdown:
+{"merchant":"store/restaurant name only","amount":total paid integer rupiah or null,"date":"YYYY-MM-DD" or null,"category":"makanan|transport|rumah|belanja|hiburan|kesehatan|tagihan|lainnya","description":"short Indonesian transaction description","confidence":0-100}
+Rules for amount:
+- Use the final paid amount, not item price/subtotal.
+- Strong labels for final paid amount: "Total", "Grand Total", "Total Bayar", "Jumlah Bayar", "Bayar Pakai", "Paid", "Payment".
+- For GoFood/Gojek/GrabFood screenshots, prefer the amount beside "Bayar Pakai GoPay/GoPay/OVO" or final payment method line.
+- Ignore: "Harga", item price, subtotal, delivery/handling fee, service fee, tax/PPN, discount, promo, cashback, cash, change/kembalian, distance, time, order ID.
+- If multiple amounts exist and discounts exist, compute paid total from subtotal + fees - discounts only if final payment line is absent.
+Rules for date:
+- Return null if image only shows day/month without year (example: "02 Agu"). Do not invent year.
+Category: food/restaurants/GoFood/GrabFood => makanan.`
 
       const result = await env.AI.run(MODEL, {
         image: Array.from(Uint8Array.from(atob(imageBase64), char => char.charCodeAt(0))),

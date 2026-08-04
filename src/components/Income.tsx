@@ -9,6 +9,7 @@ type Income = { id: string; amount: number; source: string; description: string;
 const SOURCES = ['gaji', 'bonus', 'bisnis', 'investasi', 'hadiah', 'lainnya']
 const MEMBERS = ['Papa', 'Mama', 'Anak', 'Lainnya']
 const fmt = (n: number) => n.toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })
+const label = (value: string) => value ? value[0].toUpperCase() + value.slice(1) : '-'
 
 export default function IncomeTab() {
   const [items, setItems] = useState<Income[]>([])
@@ -75,7 +76,7 @@ export default function IncomeTab() {
               <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Sumber</span>
               <select value={values.source} onChange={e => setValues({ ...values, source: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
-                {SOURCES.map(s => <option key={s} value={s}>{s}</option>)}
+                {SOURCES.map(s => <option key={s} value={s}>{label(s)}</option>)}
               </select>
             </label>
           </div>
@@ -106,17 +107,17 @@ export default function IncomeTab() {
 
       <div className="space-y-2">
         {items.map(i => (
-          <div key={i.id} className="group flex items-center justify-between rounded-xl border border-forest/8 bg-white px-4 py-3 transition hover:bg-cream-dark">
+          <div key={i.id} className="group flex items-center gap-3 rounded-xl border border-forest/8 bg-white px-4 py-3 transition hover:bg-cream-dark">
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-forest truncate">{i.description || i.source}</p>
-              <div className="flex items-center gap-2 mt-0.5">
-                <Badge variant="success">{i.source}</Badge>
-                {i.added_by && <span className="text-[10px] text-forest/35 shrink-0">oleh {i.added_by}</span>}
+              <p className="truncate text-sm font-medium text-forest">{i.description || label(i.source)}</p>
+              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                <Badge variant="success">{label(i.source)}</Badge>
+                {i.added_by && <span className="text-[10px] text-forest/35">Oleh {i.added_by}</span>}
                 <span className="text-[10px] text-forest/30">{i.date}</span>
               </div>
             </div>
-            <div className="flex items-center gap-3 shrink-0 ml-3">
-              <span className="font-semibold text-emerald-600 whitespace-nowrap">+{fmt(i.amount)}</span>
+            <div className="flex shrink-0 items-center gap-2">
+              <span className="max-w-24 truncate text-sm font-semibold text-emerald-600 sm:max-w-none">+{fmt(i.amount)}</span>
               <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)}>🗑️</Button>
             </div>
           </div>
@@ -128,7 +129,7 @@ export default function IncomeTab() {
       <ConfirmDialog
         open={!!confirmAdd}
         title="Konfirmasi Tambah Pemasukan"
-        message={`Sumber: ${confirmAdd?.source}\nJumlah: ${fmt(confirmAdd?.amount || 0)}\nDeskripsi: ${confirmAdd?.description || '-'}\nTanggal: ${confirmAdd?.date}\nDitambahkan oleh: ${confirmAdd?.added_by || '-'}`}
+        message={`Sumber: ${label(confirmAdd?.source || '')}\nJumlah: ${fmt(confirmAdd?.amount || 0)}\nDeskripsi: ${confirmAdd?.description || '-'}\nTanggal: ${confirmAdd?.date}\nDitambahkan oleh: ${confirmAdd?.added_by || '-'}`}
         confirmLabel="Ya, Tambah"
         variant="info"
         onConfirm={confirmAddIncome}
