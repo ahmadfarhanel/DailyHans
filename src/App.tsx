@@ -83,7 +83,7 @@ function Login() {
           <div className="mb-5 flex rounded-lg bg-forest/5 p-1">
             {(['login', 'signup'] as const).map(m => (
               <button key={m} type="button" onClick={() => { setMode(m); setErr('') }}
-                className={`flex-1 rounded-md py-2 text-xs font-semibold transition ${mode === m ? 'bg-forest text-cream shadow' : 'text-forest/60 hover:text-forest'}`}>
+                className={`flex-1 rounded-md py-2 text-xs font-semibold transition ${mode === m ? 'bg-gold text-cream-dark shadow' : 'text-forest/60 hover:text-forest'}`}>
                 {m === 'login' ? 'Masuk' : 'Daftar'}
               </button>
             ))}
@@ -156,7 +156,7 @@ export default function App() {
       {/* ── MOBILE HEADER (hidden on md+) ── */}
       <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between border-b border-forest/8 bg-cream/90 px-4 py-3 backdrop-blur-xl md:hidden">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-2xl border border-gold/30 bg-forest text-cream shadow-[0_10px_25px_rgba(23,23,23,0.12)]">
+          <div className="flex h-8 w-8 items-center justify-center rounded-2xl border border-gold/30 bg-gold text-cream-dark shadow-[0_10px_25px_rgba(23,23,23,0.12)]">
             <svg className="h-4 w-4 text-cream" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0a1 1 0 01-1-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 01-1 1m-4 0h4" />
             </svg>
@@ -192,7 +192,7 @@ export default function App() {
             const active = tab === t.id
             return (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all ${active ? 'bg-gold/15 text-gold border border-gold/30 shadow-sm' : 'text-forest/65 hover:bg-white/40 hover:text-forest'}`}>
+                className={`flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all ${active ? 'bg-gold/15 text-gold border border-gold/30 shadow-sm' : 'text-forest/65 hover:bg-white/90 hover:text-forest'}`}>
                 <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-base transition ${active ? 'bg-gold/20 text-gold' : 'bg-forest/5'}`}>{t.icon}</span>
                 <span className="truncate">{t.label}</span>
               </button>
@@ -201,9 +201,9 @@ export default function App() {
         </nav>
 
         <div className="mt-auto border-t border-forest/8 pt-4">
-          <div className="flex flex-col gap-3 rounded-2xl border border-forest/8 bg-white/40 p-3 backdrop-blur-sm">
+          <div className="flex flex-col gap-3 rounded-2xl border border-forest/8 bg-white/90 p-3 backdrop-blur-sm">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-forest text-cream font-bold text-sm shadow">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-cream-dark font-bold text-sm shadow">
                 {session.user.email?.charAt(0).toUpperCase()}
               </div>
               <div className="min-w-0 flex-1">
@@ -212,7 +212,7 @@ export default function App() {
               </div>
             </div>
             <div className="flex gap-2">
-              <button onClick={() => setShowProfile(true)} className="flex-1 rounded-xl border border-forest/10 bg-[#1c1921] px-3 py-2 text-xs font-semibold text-forest hover:border-gold/40 transition">
+              <button onClick={() => setShowProfile(true)} className="flex-1 rounded-xl border border-forest/10 bg-white/90 px-3 py-2 text-xs font-semibold text-forest hover:border-gold/40 transition">
                 ⚙️ Profil
               </button>
               <button onClick={() => supabase.auth.signOut()} className="rounded-xl border border-red-200/50 bg-red-50 px-3 py-2 text-xs font-semibold text-red-500 hover:bg-red-100 transition">
@@ -224,8 +224,8 @@ export default function App() {
       </aside>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="md:pl-64 pt-[57px] pb-36 md:pt-6 md:pb-12">
-        <div className="mx-auto max-w-4xl px-4 md:px-8">
+      <main className="pt-[57px] pb-40 md:pl-64 md:pt-6 md:pb-12">
+        <div className="mx-auto max-w-4xl px-3 pt-4 sm:px-4 sm:pt-5 md:px-8 md:pt-0">
           <AlertBanner alerts={alerts} />
           <Suspense fallback={<div className="flex min-h-64 items-center justify-center text-sm text-forest/65">Memuat halaman...</div>}>
             {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
@@ -237,11 +237,11 @@ export default function App() {
             {tab === 'bills' && <Bills />}
             {tab === 'plans' && <Plans />}
             {tab === 'wedding' && <>
-            <div className="relative mb-5 overflow-hidden rounded-3xl border border-forest/15 bg-gradient-to-r from-[#31182a] via-[#1d1321] to-[#0d0a10] p-1.5 shadow-xl shadow-forest/10">
+            <div className="relative mb-5 overflow-hidden rounded-3xl border border-gold/25 bg-white/90 p-1.5 shadow-[0_16px_40px_rgba(216,79,138,0.10)]">
               <div className="pointer-events-none absolute -right-6 -top-8 text-7xl opacity-10">💍</div>
               <div className="relative flex gap-2 overflow-x-auto">
-                <button type="button" onClick={() => setWeddingView('planner')} className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${weddingView === 'planner' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60 hover:bg-cream/40'}`}><span className="text-lg">💍</span><span><span className="block">Planner</span><span className="block text-[10px] font-medium opacity-80">Acara & budget</span></span></button>
-                <button type="button" onClick={() => setWeddingView('guests')} className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${weddingView === 'guests' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60 hover:bg-cream/40'}`}><span className="text-lg">👥</span><span><span className="block">Daftar Tamu</span><span className="block text-[10px] font-medium opacity-80">RSVP & pax</span></span></button>
+                <button type="button" onClick={() => setWeddingView('planner')} className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${weddingView === 'planner' ? 'bg-gold text-cream-dark shadow-lg shadow-gold/20' : 'bg-transparent text-forest/80 hover:bg-cream hover:text-forest'}`}><span className="text-lg">💍</span><span><span className="block">Planner</span><span className="block text-[10px] font-medium opacity-80">Acara & budget</span></span></button>
+                <button type="button" onClick={() => setWeddingView('guests')} className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${weddingView === 'guests' ? 'bg-gold text-cream-dark shadow-lg shadow-gold/20' : 'bg-transparent text-forest/80 hover:bg-cream hover:text-forest'}`}><span className="text-lg">👥</span><span><span className="block">Daftar Tamu</span><span className="block text-[10px] font-medium opacity-80">RSVP & pax</span></span></button>
               </div>
             </div>
               {weddingView === 'planner' ? <WeddingPlanner /> : <WeddingGuests />}
@@ -258,7 +258,7 @@ export default function App() {
             const active = tab === id
             return (
               <button key={id} onClick={() => setTab(id)}
-                className={`shrink-0 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${active ? 'bg-gold text-cream-dark shadow-md shadow-gold/20' : 'bg-white/40 text-forest/70 hover:text-forest'}`}>
+                className={`shrink-0 rounded-xl px-3.5 py-1.5 text-xs font-semibold transition-all ${active ? 'bg-gold text-cream-dark shadow-md shadow-gold/20' : 'bg-white/90 text-forest/70 hover:text-forest'}`}>
                 {item.icon} {item.label}
               </button>
             )

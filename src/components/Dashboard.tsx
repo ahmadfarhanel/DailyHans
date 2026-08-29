@@ -54,25 +54,25 @@ export default function Dashboard({ onNavigate }: Props) {
   const activity = [
     ...expenses.slice(0, 3).map(item => ({ id: `e-${item.id}`, icon: '💸', title: item.description || item.category, meta: 'Pengeluaran', value: fmt(item.amount), tone: 'text-red-500' })),
     ...income.slice(0, 2).map((item: any) => ({ id: `i-${item.id}`, icon: '📈', title: item.description || item.source, meta: 'Pemasukan', value: `+${fmt(item.amount)}`, tone: 'text-emerald-500' })),
-    ...chores.filter(item => item.done).slice(0, 2).map(item => ({ id: `c-${item.id}`, icon: '✅', title: item.title, meta: 'Tugas selesai', value: 'Done', tone: 'text-forest/65' })),
+    ...chores.filter(item => item.done).slice(0, 2).map(item => ({ id: `c-${item.id}`, icon: '✅', title: item.title, meta: 'Tugas selesai', value: 'Done', tone: 'text-forest/75' })),
   ].slice(0, 6)
 
   return (
     <div className="space-y-6">
       <section className="animate-fade-up grid gap-3 sm:gap-4 lg:grid-cols-[1.35fr_0.9fr]">
-        <div className="relative overflow-hidden rounded-[2rem] border border-forest/10 bg-gradient-to-br from-[#3a1a2c] via-[#25121d] to-[#130b11] p-4 shadow-[0_30px_80px_rgba(126,38,70,0.18)] sm:p-7">
-          <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-gold/12 blur-2xl animate-float-slow" />
-          <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white/5 blur-2xl animate-float-slow" />
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/8 to-transparent animate-sheen" />
+        <div className="relative overflow-hidden rounded-[2rem] border border-gold/25 bg-white/90 p-4 shadow-[0_24px_60px_rgba(216,79,138,0.12)] sm:p-7">
+          <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-gold/18 blur-2xl animate-float-slow" />
+          <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white/40 blur-2xl animate-float-slow" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-sheen" />
           <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-forest/75">DailyKaoAyy Home</p>
           <div className="mt-3 max-w-xl">
             <h1 className="text-[1.7rem] font-black leading-tight tracking-tight text-forest sm:text-4xl">Ringkasan Rumah Hari Ini</h1>
             <p className="mt-2 text-sm leading-relaxed text-forest/75">Keuangan, tugas, belanja, dan wedding planner tetap rapi dalam satu tampilan yang tenang dan premium.</p>
           </div>
-          <div className="mt-6 rounded-[1.75rem] border border-forest/15 bg-[#111116]/95 p-4 shadow-inner shadow-black/30 backdrop-blur-sm sm:p-5">
+          <div className="mt-6 rounded-[1.75rem] border border-forest/15 bg-[#fff8fb]/95 p-4 shadow-inner shadow-black/30 backdrop-blur-sm sm:p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs font-medium uppercase tracking-[0.18em] text-forest/65">Sisa saldo aman</p>
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-forest/75">Sisa saldo aman</p>
                 <p className={`mt-2 max-w-full break-words text-[clamp(1.6rem,8vw,2.7rem)] font-black leading-none tracking-tight ${balance >= 0 ? 'text-forest' : 'text-red-500'}`}>{fmt(balance)}</p>
               </div>
               <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${balance >= 0 ? 'bg-forest/10 text-forest' : 'bg-red-50 text-red-500'}`}>{balance >= 0 ? 'Aman' : 'Minus'}</span>
@@ -80,7 +80,7 @@ export default function Dashboard({ onNavigate }: Props) {
             <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-forest/10">
               <div className="h-full rounded-full bg-gradient-to-r from-gold via-forest to-forest-light" style={{ width: `${usedPercent}%` }} />
             </div>
-            <div className="mt-2 flex justify-between text-[10px] text-forest/65">
+            <div className="mt-2 flex justify-between text-[10px] text-forest/75">
               <span>Terpakai {usedPercent}%</span>
               <span>Sisa {fmt(safeBalance)}</span>
             </div>
@@ -88,21 +88,21 @@ export default function Dashboard({ onNavigate }: Props) {
         </div>
 
         <div className="grid gap-4">
-          <button onClick={() => onNavigate('savings')} className="relative overflow-hidden rounded-[2rem] border border-[#c4b5fd]/30 bg-[#16111d] p-5 text-left shadow-[0_24px_60px_rgba(79,70,229,0.14)] transition active:scale-[0.99]">
+          <button onClick={() => onNavigate('savings')} className="relative overflow-hidden rounded-[2rem] border border-[#c4b5fd]/30 bg-white/90 p-5 text-left shadow-[0_24px_60px_rgba(79,70,229,0.14)] transition active:scale-[0.99]">
             <span className="pointer-events-none absolute -right-4 -top-6 text-7xl opacity-10">💎</span>
             <span className="relative flex items-start gap-3">
-              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-[#c4b5fd]/25 bg-[#8b5cf6]/18 text-2xl">💎</span>
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-[#c4b5fd]/25 bg-gold/15 text-2xl">💎</span>
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-black text-[#f5f3ff]">Target Tabungan</span>
-                <span className="mt-0.5 block text-xs text-[#ddd6fe]/70">Dana aman, terpisah dari sisa saldo</span>
+                <span className="block text-sm font-black text-forest">Target Tabungan</span>
+                <span className="mt-0.5 block text-xs text-forest/75">Dana aman, terpisah dari sisa saldo</span>
               </span>
               <span className="shrink-0 text-right">
-                <span className="block text-base font-black text-[#e9d5ff]">{fmt(savingsTotal)}</span>
-                <span className="text-[10px] font-semibold text-[#ddd6fe]/55">Buka target ›</span>
+                <span className="block text-base font-black text-forest">{fmt(savingsTotal)}</span>
+                <span className="text-[10px] font-semibold text-forest/75">Buka target ›</span>
               </span>
             </span>
             <span className="relative mt-4 block h-1.5 overflow-hidden rounded-full bg-black/25"><span className="block h-full rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#e9d5ff]" style={{ width: `${savingsTarget ? Math.min(100, Math.round(savingsTotal / savingsTarget * 100)) : 0}%` }} /></span>
-            <span className="relative mt-2 flex justify-between text-[10px] text-[#ddd6fe]/55"><span>{savingsTarget ? `Target ${fmt(savingsTarget)}` : 'Buat target pertamamu'}</span><span>{savingsTarget ? `${Math.min(100, Math.round(savingsTotal / savingsTarget * 100))}%` : ''}</span></span>
+            <span className="relative mt-2 flex justify-between text-[10px] text-forest/75"><span>{savingsTarget ? `Target ${fmt(savingsTarget)}` : 'Buat target pertamamu'}</span><span>{savingsTarget ? `${Math.min(100, Math.round(savingsTotal / savingsTarget * 100))}%` : ''}</span></span>
           </button>
 
           <div className="grid grid-cols-3 gap-3">
@@ -116,10 +116,10 @@ export default function Dashboard({ onNavigate }: Props) {
       <section>
         <div className="mb-3 flex items-end justify-between gap-3">
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-forest/65">Keuangan</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-forest/75">Keuangan</p>
             <h2 className="mt-1 text-xl font-black tracking-tight text-forest">Snapshot saldo</h2>
           </div>
-          <span className="rounded-full border border-forest/10 bg-[#1c1921] px-3 py-1 text-[11px] font-semibold text-forest/75">Total saat ini</span>
+          <span className="rounded-full border border-forest/10 bg-white/90 px-3 py-1 text-[11px] font-semibold text-forest/75">Total saat ini</span>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Metric icon="📈" label="Total pemasukan" value={fmt(incomeTotal)} tone="text-emerald-500" surface="bg-emerald-50 border-emerald-200" />
@@ -136,7 +136,7 @@ export default function Dashboard({ onNavigate }: Props) {
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-forest/10 text-xl transition group-hover:bg-gold/15">{action.icon}</span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-bold text-forest">{action.label}</span>
-                <span className="mt-0.5 block truncate text-[11px] text-forest/65">{action.sub}</span>
+                <span className="mt-0.5 block truncate text-[11px] text-forest/75">{action.sub}</span>
               </span>
               <span className="text-forest/60">›</span>
             </button>
@@ -151,12 +151,12 @@ export default function Dashboard({ onNavigate }: Props) {
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-forest/8 text-base">{item.icon}</span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-forest">{item.title}</p>
-                <p className="text-[10px] text-forest/65">{item.meta}</p>
+                <p className="text-[10px] text-forest/75">{item.meta}</p>
               </div>
               <span className={`shrink-0 text-xs font-bold ${item.tone}`}>{item.value}</span>
             </div>
           ))}
-          {!activity.length && <p className="py-8 text-center text-sm text-forest/65">Belum ada aktivitas. Mulai dari scan struk atau tambah pemasukan.</p>}
+          {!activity.length && <p className="py-8 text-center text-sm text-forest/75">Belum ada aktivitas. Mulai dari scan struk atau tambah pemasukan.</p>}
         </div>
       </Card>
 
@@ -187,6 +187,6 @@ function MiniStat({ icon, value, label, onClick }: { icon: string; value: string
   return <button onClick={onClick} className="min-w-0 rounded-[1.5rem] border border-forest/10 bg-white/80 p-3 text-left shadow-sm transition active:scale-[0.98]">
     <span className="text-xl">{icon}</span>
     <p className="mt-2 truncate text-lg font-black text-forest">{value}</p>
-    <p className="truncate text-[10px] text-forest/65">{label}</p>
+    <p className="truncate text-[10px] text-forest/75">{label}</p>
   </button>
 }

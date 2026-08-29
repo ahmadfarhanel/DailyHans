@@ -10,7 +10,7 @@ type GuestDraft = { name: string; family_side: string; region: string; pax: numb
 
 const slug = (name: string) => name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
 const phoneWa = (phone: string) => phone.replace(/\D/g, '').replace(/^0/, '62')
-const inviteUrl = (name: string) => `https://wedding-kaoayy.vercel.app/?to=${encodeURIComponent(slug(name))}`
+const inviteUrl = (name: string) => `https://kaoayy-wedding.vercel.app/?to=${encodeURIComponent(slug(name))}`
 
 function parseBulkText(text: string): GuestDraft[] {
   return text

@@ -3,30 +3,30 @@
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
-  --color-cream: #3a1528;
-  --color-cream-dark: #220d17;
-  --color-forest: #fff4f8;
-  --color-forest-light: #ffffff;
-  --color-forest-dark: #ffdbe8;
-  --color-gold: #f29ac0;
-  --color-gold-light: #ffc6dd;
+  --color-cream: #ffe8f1;
+  --color-cream-dark: #ffd6e6;
+  --color-forest: #3d1028;
+  --color-forest-light: #681b42;
+  --color-forest-dark: #250817;
+  --color-gold: #d84f8a;
+  --color-gold-light: #f08ab7;
 }
 
 @layer utilities {
-  .bg-white { background-color: #4a1b33 !important; }
-  .bg-white\/80 { background-color: rgb(74 27 51 / .88) !important; }
-  .bg-white\/90 { background-color: rgb(74 27 51 / .96) !important; }
+  .bg-white { background-color: #fff8fb !important; }
+  .bg-white\/80 { background-color: rgb(255 248 251 / .88) !important; }
+  .bg-white\/90 { background-color: rgb(255 248 251 / .96) !important; }
 
-  .bg-red-50 { background-color: #5a2038 !important; }
-  .bg-red-100\/50 { background-color: rgb(90 32 56 / .65) !important; }
-  .bg-amber-50 { background-color: #5a2942 !important; }
-  .bg-sky-50, .bg-blue-50 { background-color: #22233a !important; }
-  .bg-emerald-50 { background-color: #18352d !important; }
+  .bg-red-50 { background-color: #ffe4ea !important; }
+  .bg-red-100\/50 { background-color: rgb(255 207 220 / .65) !important; }
+  .bg-amber-50 { background-color: #fff0e8 !important; }
+  .bg-sky-50, .bg-blue-50 { background-color: #eef4ff !important; }
+  .bg-emerald-50 { background-color: #e8f7ef !important; }
 
-  .text-amber-700, .text-amber-800 { color: #f2b8cc !important; }
-  .text-red-500, .text-red-600 { color: #f87171 !important; }
-  .text-sky-600, .text-sky-700 { color: #60a5fa !important; }
-  .text-emerald-500, .text-emerald-600, .text-emerald-700 { color: #34d399 !important; }
+  .text-amber-700, .text-amber-800 { color: #9c4f24 !important; }
+  .text-red-500, .text-red-600 { color: #be294f !important; }
+  .text-sky-600, .text-sky-700 { color: #315f9a !important; }
+  .text-emerald-500, .text-emerald-600, .text-emerald-700 { color: #267453 !important; }
 
   .border-red-200 { border-color: rgb(248 113 113 / .18) !important; }
   .border-amber-200 { border-color: rgb(195 161 104 / .18) !important; }
@@ -36,9 +36,9 @@
 
 body {
   background:
-    radial-gradient(circle at top left, rgb(255 196 220 / .22), transparent 26rem),
-    radial-gradient(circle at bottom right, rgb(122 19 58 / .28), transparent 24rem),
-    #220d17;
+    radial-gradient(circle at top left, rgb(255 183 213 / .45), transparent 24rem),
+    radial-gradient(circle at bottom right, rgb(240 138 183 / .28), transparent 22rem),
+    #ffe8f1;
   scroll-behavior: smooth;
 }
 
