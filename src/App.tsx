@@ -1,19 +1,20 @@
-import { useState, useEffect } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 import { supabase } from './lib/supabase'
 import { useAuth } from './lib/useAuth'
 import { getBillAlerts, type BillAlert } from './lib/notifications'
-import Dashboard from './components/Dashboard'
-import Expenses from './components/Expenses'
-import Income from './components/Income'
-import Chores from './components/Chores'
-import Shopping from './components/Shopping'
-import Bills from './components/Bills'
-import Plans from './components/Plans'
 import Notifications, { AlertBanner } from './components/Notifications'
 import Profile from './components/Profile'
-import WeddingPlanner from './components/WeddingPlanner'
-import WeddingGuests from './components/WeddingGuests'
-import Savings from './components/Savings'
+
+const Dashboard = lazy(() => import('./components/Dashboard'))
+const Expenses = lazy(() => import('./components/Expenses'))
+const Income = lazy(() => import('./components/Income'))
+const Chores = lazy(() => import('./components/Chores'))
+const Shopping = lazy(() => import('./components/Shopping'))
+const Bills = lazy(() => import('./components/Bills'))
+const Plans = lazy(() => import('./components/Plans'))
+const WeddingPlanner = lazy(() => import('./components/WeddingPlanner'))
+const WeddingGuests = lazy(() => import('./components/WeddingGuests'))
+const Savings = lazy(() => import('./components/Savings'))
 
 type Tab = 'dashboard' | 'expenses' | 'income' | 'chores' | 'shopping' | 'bills' | 'plans' | 'wedding' | 'savings'
 
@@ -227,15 +228,16 @@ export default function App() {
       <main className="md:pl-56 pt-[57px] pb-36 md:pt-0 md:pb-0">
         <div className="mx-auto max-w-3xl px-4 py-6">
           <AlertBanner alerts={alerts} />
-          {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
-          {tab === 'expenses' && <Expenses />}
-          {tab === 'income' && <Income />}
-          {tab === 'savings' && <Savings />}
-          {tab === 'chores' && <Chores />}
-          {tab === 'shopping' && <Shopping />}
-          {tab === 'bills' && <Bills />}
-          {tab === 'plans' && <Plans />}
-          {tab === 'wedding' && <>
+          <Suspense fallback={<div className="flex min-h-64 items-center justify-center text-sm text-forest/40">Memuat halaman...</div>}>
+            {tab === 'dashboard' && <Dashboard onNavigate={t => setTab(t as Tab)} />}
+            {tab === 'expenses' && <Expenses />}
+            {tab === 'income' && <Income />}
+            {tab === 'savings' && <Savings />}
+            {tab === 'chores' && <Chores />}
+            {tab === 'shopping' && <Shopping />}
+            {tab === 'bills' && <Bills />}
+            {tab === 'plans' && <Plans />}
+            {tab === 'wedding' && <>
             <div className="relative mb-5 overflow-hidden rounded-3xl border border-forest/15 bg-gradient-to-r from-[#31182a] via-[#1d1321] to-[#0d0a10] p-1.5 shadow-xl shadow-forest/10">
               <div className="pointer-events-none absolute -right-6 -top-8 text-7xl opacity-10">💍</div>
               <div className="relative flex gap-2 overflow-x-auto">
@@ -243,8 +245,9 @@ export default function App() {
                 <button type="button" onClick={() => setWeddingView('guests')} className={`flex min-h-12 shrink-0 items-center gap-2 rounded-2xl px-4 text-sm font-bold transition ${weddingView === 'guests' ? 'bg-forest text-cream shadow-lg shadow-forest/25' : 'text-forest/60 hover:bg-cream/40'}`}><span className="text-lg">👥</span><span><span className="block">Daftar Tamu</span><span className="block text-[10px] font-medium opacity-65">RSVP & pax</span></span></button>
               </div>
             </div>
-            {weddingView === 'planner' ? <WeddingPlanner /> : <WeddingGuests />}
-          </>}
+              {weddingView === 'planner' ? <WeddingPlanner /> : <WeddingGuests />}
+            </>}
+          </Suspense>
         </div>
       </main>
 
