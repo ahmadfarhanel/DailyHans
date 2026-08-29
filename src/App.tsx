@@ -128,33 +128,39 @@ function Login() {
 }
 
 export default function App() {
-  const { session, loading } = useAuth()
+  const { session } = useAuth()
   const [tab, setTab] = useState<Tab>('dashboard')
   const [alerts, setAlerts] = useState<BillAlert[]>([])
   const [showProfile, setShowProfile] = useState(false)
   const [weddingView, setWeddingView] = useState<'planner' | 'guests'>('planner')
+  const [isOffline, setIsOffline] = useState(!navigator.onLine)
 
   useEffect(() => {
-    getBillAlerts().then(setAlerts)
-    const t = setInterval(() => getBillAlerts().then(setAlerts), 60000)
-    return () => clearInterval(t)
+    const handleOnline = () => setIsOffline(false)
+    const handleOffline = () => setIsOffline(true)
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
   }, [])
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-cream">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-2 border-forest/15 border-t-forest" />
-          <span className="text-sm text-forest/40">Memuat...</span>
-        </div>
-      </div>
-    )
-  }
+  useEffect(() => {
+    getBillAlerts().then(setAlerts).catch(() => {})
+    const t = setInterval(() => getBillAlerts().then(setAlerts).catch(() => {}), 60000)
+    return () => clearInterval(t)
+  }, [])
 
   if (!session) return <Login />
 
   return (
     <div className="min-h-screen bg-cream-dark text-forest font-sans">
+      {isOffline && (
+        <div className="bg-amber-500 text-white text-center text-xs py-1 font-semibold sticky top-0 z-50">
+          Koneksi terputus / offline. Menampilkan data lokal.
+        </div>
+      )}
 
       {/* ── MOBILE HEADER (hidden on md+) ── */}
       <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between border-b border-forest/8 bg-cream px-4 py-3 md:hidden">
