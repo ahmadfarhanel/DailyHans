@@ -4,6 +4,7 @@ import { useAuth } from './lib/useAuth'
 import { getBillAlerts, type BillAlert } from './lib/notifications'
 import Notifications, { AlertBanner } from './components/Notifications'
 import Profile from './components/Profile'
+import { useServiceStatus } from './lib/useServiceStatus'
 
 const Dashboard = lazy(() => import('./components/Dashboard'))
 const Expenses = lazy(() => import('./components/Expenses'))
@@ -129,22 +130,11 @@ function Login() {
 
 export default function App() {
   const { session } = useAuth()
+  const { unavailable, retry } = useServiceStatus()
   const [tab, setTab] = useState<Tab>('dashboard')
   const [alerts, setAlerts] = useState<BillAlert[]>([])
   const [showProfile, setShowProfile] = useState(false)
   const [weddingView, setWeddingView] = useState<'planner' | 'guests'>('planner')
-  const [isOffline, setIsOffline] = useState(!navigator.onLine)
-
-  useEffect(() => {
-    const handleOnline = () => setIsOffline(false)
-    const handleOffline = () => setIsOffline(true)
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-    return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
-    }
-  }, [])
 
   useEffect(() => {
     getBillAlerts().then(setAlerts).catch(() => {})
@@ -156,9 +146,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-cream-dark text-forest font-sans">
-      {isOffline && (
-        <div className="bg-amber-500 text-white text-center text-xs py-1 font-semibold sticky top-0 z-50">
-          Koneksi terputus / offline. Menampilkan data lokal.
+      {unavailable && (
+        <div className="bg-amber-500 text-white text-center text-xs py-2 px-4 font-semibold sticky top-0 z-50 flex items-center justify-center gap-2">
+          <span>Koneksi ke server gagal (offline/gangguan). Menampilkan data lokal.</span>
+          <button onClick={retry} className="underline opacity-80 hover:opacity-100">Coba lagi</button>
         </div>
       )}
 
