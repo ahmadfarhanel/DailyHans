@@ -70,7 +70,7 @@ export default function WeddingPlanner() {
 
   return <div className="space-y-6">
     <Card title="Wedding Planner" icon="💍">
-      <div className="relative overflow-hidden rounded-3xl border border-gold/25 bg-white/90 p-4 shadow-[0_16px_40px_rgba(216,79,138,0.10)] sm:p-6">
+      <div className="relative overflow-hidden rounded-3xl border border-forest-light/20 bg-gradient-to-br from-white/90 via-white/90 to-gold/12 p-4 shadow-[0_16px_40px_rgba(102,0,51,0.12)] sm:p-6">
         <div className="pointer-events-none absolute -right-8 -top-10 text-8xl opacity-10">💍</div>
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_0%,rgba(240,138,183,.16),transparent_40%)]" />
         <div className="relative">

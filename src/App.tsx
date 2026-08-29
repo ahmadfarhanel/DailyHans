@@ -175,7 +175,7 @@ export default function App() {
       {/* ── DESKTOP SIDEBAR (hidden on mobile) ── */}
       <aside className="fixed inset-y-0 left-0 z-40 hidden md:flex w-64 flex-col border-r border-forest/10 bg-cream/90 backdrop-blur-2xl overflow-hidden p-4">
         <div className="flex items-center gap-3 border-b border-forest/8 pb-5 px-2">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-gold to-gold-light text-cream-dark font-black shadow-lg shadow-gold/15">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-forest-light to-gold text-white font-black shadow-lg shadow-gold/15 animate-pulse-soft">
             D
           </div>
           <div className="flex flex-col">
@@ -192,8 +192,8 @@ export default function App() {
             const active = tab === t.id
             return (
               <button key={t.id} onClick={() => setTab(t.id)}
-                className={`flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all ${active ? 'bg-gold/15 text-gold border border-gold/30 shadow-sm' : 'text-forest/65 hover:bg-white/90 hover:text-forest'}`}>
-                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-base transition ${active ? 'bg-gold/20 text-gold' : 'bg-forest/5'}`}>{t.icon}</span>
+                className={`flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all ${active ? 'bg-gradient-to-r from-forest-light/15 to-gold/15 text-forest border border-forest-light/25 shadow-sm' : 'text-forest/65 hover:bg-white/90 hover:text-forest'}`}>
+                <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-base transition ${active ? 'bg-forest-light/15 text-forest-light' : 'bg-forest/5'}`}>{t.icon}</span>
                 <span className="truncate">{t.label}</span>
               </button>
             )

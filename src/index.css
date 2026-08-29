@@ -6,7 +6,7 @@
   --color-cream: #ffe8f1;
   --color-cream-dark: #ffd6e6;
   --color-forest: #3d1028;
-  --color-forest-light: #681b42;
+  --color-forest-light: #660033;
   --color-forest-dark: #250817;
   --color-gold: #d84f8a;
   --color-gold-light: #f08ab7;
@@ -16,6 +16,7 @@
   .bg-white { background-color: #fff8fb !important; }
   .bg-white\/80 { background-color: rgb(255 248 251 / .88) !important; }
   .bg-white\/90 { background-color: rgb(255 248 251 / .96) !important; }
+  .bg-white\/40 { background-color: rgb(255 240 246 / .82) !important; }
 
   .bg-red-50 { background-color: #ffe4ea !important; }
   .bg-red-100\/50 { background-color: rgb(255 207 220 / .65) !important; }
@@ -64,10 +65,22 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9) sepi
   100% { transform: translateX(120%); }
 }
 
+@keyframes pulse-soft {
+  0%, 100% { opacity: .85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.03); }
+}
+
+@keyframes lift {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
 @layer utilities {
   .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
   .animate-fade-up { animation: fade-up .5s ease-out both; }
   .animate-sheen { animation: sheen 2.8s linear infinite; }
+  .animate-pulse-soft { animation: pulse-soft 3.5s ease-in-out infinite; }
+  .animate-lift { animation: lift 5s ease-in-out infinite; }
 }
 
 /* Native select stays accessible; custom arrow and touch target improve mobile. */

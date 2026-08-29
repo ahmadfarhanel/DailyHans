@@ -41,8 +41,8 @@ export function Button({ variant = 'primary', size = 'md', className = '', ...pr
 
 export function Card({ title, icon, children, className = '', onClick }: { title: string; icon?: string; children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent) => void }) {
   return (
-    <section onClick={onClick} className={`rounded-3xl border border-forest/10 bg-white/90 shadow-[0_12px_34px_rgba(0,0,0,0.12)] overflow-hidden transition duration-200 will-change-transform hover:-translate-y-0.5 ${className}`}>
-      <div className="flex items-center gap-2.5 border-b border-forest/8 bg-transparent px-5 py-4">
+    <section onClick={onClick} className={`rounded-3xl border border-forest-light/18 bg-white/90 shadow-[0_14px_38px_rgba(122,21,63,0.12)] overflow-hidden transition duration-300 will-change-transform hover:-translate-y-1 hover:shadow-[0_22px_52px_rgba(122,21,63,0.18)] ${className}`}>
+      <div className="flex items-center gap-2.5 border-b border-forest-light/12 bg-gradient-to-r from-forest-light/10 to-gold/10 px-5 py-4">
         {icon && <span className="text-lg">{icon}</span>}
         <h2 className="text-base font-semibold text-forest">{title}</h2>
       </div>
