@@ -25,7 +25,7 @@ export default function Notifications({ alerts }: Props) {
           <div className="absolute right-0 top-12 z-50 w-80 rounded-2xl border border-forest/10 bg-white shadow-2xl shadow-forest/10 overflow-hidden">
             <div className="border-b border-forest/10 px-4 py-3 bg-gradient-to-r from-red-50 to-orange-50">
               <p className="text-sm font-semibold text-forest">Notifikasi Tagihan</p>
-              <p className="text-xs text-forest/50">{alerts.length} perlu perhatian</p>
+              <p className="text-xs text-forest/60">{alerts.length} perlu perhatian</p>
             </div>
             <div className="max-h-64 overflow-y-auto p-2 space-y-1">
               {alerts.map((a, i) => (

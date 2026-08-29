@@ -48,7 +48,7 @@ export default function Profile({ onClose }: { onClose: () => void }) {
 
             {/* Input Nama */}
             <div>
-              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">
+              <label className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">
                 Nama Lengkap
               </label>
               <input
@@ -56,7 +56,7 @@ export default function Profile({ onClose }: { onClose: () => void }) {
                 placeholder="Nama tampilan"
                 value={name}
                 onChange={e => setName(e.target.value)}
-                className="w-full rounded-xl border border-forest/12 bg-white px-4 py-3 text-sm text-forest outline-none transition placeholder:text-forest/30 focus:border-forest/40 focus:ring-2 focus:ring-forest/10"
+                className="w-full rounded-xl border border-forest/12 bg-white px-4 py-3 text-sm text-forest outline-none transition placeholder:text-forest/50 focus:border-forest/40 focus:ring-2 focus:ring-forest/10"
                 autoFocus
               />
             </div>

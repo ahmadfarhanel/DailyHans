@@ -42,7 +42,7 @@ export default function Chores() {
       <div className="mb-5 rounded-xl bg-gradient-to-r from-forest/10 to-gold/5 border border-forest/15 p-4">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-forest/70">Progress</p>
-          <p className="text-xs text-forest/40">{doneCount}/{items.length}</p>
+          <p className="text-xs text-forest/65">{doneCount}/{items.length}</p>
         </div>
         <div className="mt-2 h-2 rounded-full bg-cream overflow-hidden">
           <div className="h-full rounded-full bg-gradient-to-r from-forest to-forest-light transition-all" style={{ width: `${progress}%` }} />
@@ -54,7 +54,7 @@ export default function Chores() {
           <Input label="Nama Tugas" placeholder="Sapu lantai" value={values.title} onChange={set('title')} required />
           <div className="grid grid-cols-2 gap-3">
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditugaskan Kepada</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Ditugaskan Kepada</span>
               <select value={values.assignee} onChange={e => setValues({ ...values, assignee: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 <option value="">— pilih —</option>
@@ -62,7 +62,7 @@ export default function Chores() {
               </select>
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Ditambahkan oleh</span>
               <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 <option value="">— pilih —</option>
@@ -86,9 +86,9 @@ export default function Chores() {
               <input type="checkbox" checked={i.done} onChange={() => { toggleChore(i.id, !i.done); setItems(items.map(x => x.id === i.id ? { ...x, done: !x.done } : x)) }}
                 className="h-4 w-4 rounded accent-forest" />
               <div className="min-w-0">
-                <p className={`text-sm font-medium truncate ${i.done ? 'text-forest/40 line-through' : 'text-forest'}`}>{i.title}</p>
-                {(i as any).assignee && <span className="text-[10px] text-forest/35">ditugaskan: {(i as any).assignee}</span>}
-                {(i as any).added_by && <span className="text-[10px] text-forest/30 ml-2">oleh {(i as any).added_by}</span>}
+                <p className={`text-sm font-medium truncate ${i.done ? 'text-forest/65 line-through' : 'text-forest'}`}>{i.title}</p>
+                {(i as any).assignee && <span className="text-[10px] text-forest/60">ditugaskan: {(i as any).assignee}</span>}
+                {(i as any).added_by && <span className="text-[10px] text-forest/60 ml-2">oleh {(i as any).added_by}</span>}
               </div>
             </div>
             <Button variant="danger" size="sm" onClick={() => setConfirmDelete(i)} className="ml-2">🗑️</Button>

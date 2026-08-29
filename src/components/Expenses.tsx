@@ -156,7 +156,7 @@ export default function Expenses() {
       <div className="mb-5 rounded-xl bg-gradient-to-r from-gold/15 via-gold/10 to-gold/5 border border-gold/20 p-4">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-amber-700">Total Bulan Ini</p>
-          <p className="text-xs text-forest/40">{items.length} transaksi</p>
+          <p className="text-xs text-forest/65">{items.length} transaksi</p>
         </div>
         <p className="mt-1 text-2xl font-bold text-forest">{fmt(total)}</p>
       </div>
@@ -175,10 +175,10 @@ export default function Expenses() {
               )}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-forest">Scan struk</p>
-                <p className="mt-0.5 text-[11px] leading-relaxed text-forest/55">
+                <p className="mt-0.5 text-[11px] leading-relaxed text-forest/75">
                   Pilih foto. AI otomatis membaca total, tanggal, toko, dan kategori.
                 </p>
-                {receiptName && <p className="mt-1 truncate text-[10px] text-forest/50">{receiptName}</p>}
+                {receiptName && <p className="mt-1 truncate text-[10px] text-forest/60">{receiptName}</p>}
                 <div className="mt-2 flex gap-2">
                   <label className="cursor-pointer rounded-lg bg-forest px-3 py-1.5 text-xs font-semibold text-cream transition hover:bg-forest-light">
                     📷 Kamera
@@ -203,7 +203,7 @@ export default function Expenses() {
               <div className="mt-3 rounded-lg border border-forest/15 bg-forest/8 px-3 py-2 text-[11px] text-forest/75">
                 <p className="font-semibold">OCR selesai • keyakinan {scan.confidence}%</p>
                 <p className="mt-1">Toko: {scan.merchant || '-'} • Total: {scan.amount ? fmt(scan.amount) : '-'} • Kategori: {label(scan.category)}</p>
-                <p className="mt-1 text-forest/50">Cek kembali hasil sebelum simpan.</p>
+                <p className="mt-1 text-forest/60">Cek kembali hasil sebelum simpan.</p>
               </div>
             )}
             {scanError && <p className="mt-3 text-[11px] text-red-500">{scanError}</p>}
@@ -212,7 +212,7 @@ export default function Expenses() {
           <div className="grid grid-cols-2 gap-3">
             <CurrencyInput label="Jumlah" placeholder="25.000" value={values.amount} onValueChange={value => setValues({ ...values, amount: value })} required />
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Kategori</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Kategori</span>
               <select value={values.category} onChange={e => setValues({ ...values, category: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 {CATS.map(c => <option key={c.id} value={c.id}>{c.icon} {label(c.id)}</option>)}
@@ -222,12 +222,12 @@ export default function Expenses() {
           <Input label="Deskripsi" placeholder="Beli sayur di pasar" value={values.description} onChange={set('description')} />
           <div className="grid grid-cols-2 gap-3">
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Tanggal</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Tanggal</span>
               <input type="date" value={values.date} onChange={e => setValues({ ...values, date: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10" />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Ditambahkan oleh</span>
               <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 <option value="">— pilih —</option>
@@ -256,8 +256,8 @@ export default function Expenses() {
                   <p className="text-sm font-medium text-forest truncate">{i.description || i.category}</p>
                   <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
                     <Badge variant={cat.color as any}>{label(i.category)}</Badge>
-                    {(i as any).added_by && <span className="text-[10px] text-forest/35">oleh {(i as any).added_by}</span>}
-                    <span className="text-[10px] text-forest/30">{i.date}</span>
+                    {(i as any).added_by && <span className="text-[10px] text-forest/60">oleh {(i as any).added_by}</span>}
+                    <span className="text-[10px] text-forest/60">{i.date}</span>
                   </div>
                 </div>
               </div>

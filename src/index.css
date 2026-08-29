@@ -45,6 +45,27 @@ body {
 ::selection { background: #c3a168; color: #0a0a0a; }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9) sepia(0.2) saturate(0.6) hue-rotate(10deg); }
 
+@keyframes float-slow {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -10px, 0); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translate3d(0, 12px, 0); }
+  to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes sheen {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+@layer utilities {
+  .animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+  .animate-fade-up { animation: fade-up .5s ease-out both; }
+  .animate-sheen { animation: sheen 2.8s linear infinite; }
+}
+
 /* Native select stays accessible; custom arrow and touch target improve mobile. */
 select {
   appearance: none;

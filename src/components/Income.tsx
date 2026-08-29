@@ -91,7 +91,7 @@ export default function IncomeTab() {
       <div className="mb-5 rounded-xl bg-gradient-to-r from-forest/10 to-gold/5 border border-forest/15 p-4">
         <div className="flex items-center justify-between">
           <p className="text-xs font-medium text-forest/70">Total Pemasukan</p>
-          <p className="text-xs text-forest/40">{items.length} transaksi</p>
+          <p className="text-xs text-forest/65">{items.length} transaksi</p>
         </div>
         <p className="mt-1 text-2xl font-bold text-forest">{fmt(total)}</p>
       </div>
@@ -107,7 +107,7 @@ export default function IncomeTab() {
               ) : <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-forest/10 text-2xl">🖼️</div>}
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-forest">Upload bukti</p>
-                <p className="text-[11px] text-forest/55">Gambar dikompres otomatis sebelum disimpan.</p>
+                <p className="text-[11px] text-forest/75">Gambar dikompres otomatis sebelum disimpan.</p>
                 <div className="mt-2 flex gap-2">
                   <label className="cursor-pointer rounded-lg border border-forest/20 px-3 py-1.5 text-xs font-semibold text-forest/75 hover:bg-forest/10">
                     Galeri
@@ -122,7 +122,7 @@ export default function IncomeTab() {
           <div className="grid grid-cols-2 gap-3">
             <CurrencyInput label="Jumlah" placeholder="5.000.000" value={values.amount} onValueChange={value => setValues({ ...values, amount: value })} required />
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Sumber</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Sumber</span>
               <select value={values.source} onChange={e => setValues({ ...values, source: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 {SOURCES.map(s => <option key={s} value={s}>{label(s)}</option>)}
@@ -132,12 +132,12 @@ export default function IncomeTab() {
           <Input label="Deskripsi" placeholder="Gaji bulan Agustus" value={values.description} onChange={set('description')} />
           <div className="grid grid-cols-2 gap-3">
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Tanggal</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Tanggal</span>
               <input type="date" value={values.date} onChange={e => setValues({ ...values, date: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10" />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Ditambahkan oleh</span>
               <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 <option value="">— pilih —</option>
@@ -163,8 +163,8 @@ export default function IncomeTab() {
               <p className="truncate text-sm font-medium text-forest">{i.description || label(i.source)}</p>
               <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
                 <Badge variant="success">{label(i.source)}</Badge>
-                {i.added_by && <span className="text-[10px] text-forest/35">Oleh {i.added_by}</span>}
-                <span className="text-[10px] text-forest/30">{i.date}</span>
+                {i.added_by && <span className="text-[10px] text-forest/60">Oleh {i.added_by}</span>}
+                <span className="text-[10px] text-forest/60">{i.date}</span>
               </div>
             </div>
             </div>

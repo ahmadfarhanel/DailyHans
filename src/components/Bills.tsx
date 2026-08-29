@@ -60,7 +60,7 @@ export default function Bills() {
           <div className="grid grid-cols-2 gap-3">
             <Input label="Jumlah (Rp)" type="number" min="1" placeholder="500000" value={values.amount} onChange={set('amount')} required />
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Kategori</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Kategori</span>
               <select value={values.category} onChange={e => setValues({ ...values, category: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 {CATS.map(c => <option key={c} value={c}>{c}</option>)}
@@ -69,12 +69,12 @@ export default function Bills() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Jatuh Tempo</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Jatuh Tempo</span>
               <input type="date" value={values.due_date} onChange={e => setValues({ ...values, due_date: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10" />
             </label>
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Perulangan</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Perulangan</span>
               <select value={values.recurring} onChange={e => setValues({ ...values, recurring: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 <option value="sekali">Sekali</option>
@@ -85,7 +85,7 @@ export default function Bills() {
             </label>
           </div>
           <label className="block">
-            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Ditambahkan oleh</span>
+            <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Ditambahkan oleh</span>
             <select value={values.added_by} onChange={e => setValues({ ...values, added_by: e.target.value })}
               className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
               <option value="">— pilih —</option>
@@ -111,12 +111,12 @@ export default function Bills() {
                   <div className="flex items-center gap-2">
                     <input type="checkbox" checked={i.paid} onChange={() => { toggleBill(i.id, !i.paid); setItems(items.map(x => x.id === i.id ? { ...x, paid: !x.paid } : x)) }}
                       className="h-4 w-4 rounded accent-forest shrink-0" />
-                    <p className={`text-sm font-medium truncate ${i.paid ? 'text-forest/40 line-through' : 'text-forest'}`}>{i.name}</p>
+                    <p className={`text-sm font-medium truncate ${i.paid ? 'text-forest/65 line-through' : 'text-forest'}`}>{i.name}</p>
                   </div>
                   <div className="mt-1.5 ml-6 flex flex-wrap items-center gap-x-2 gap-y-1">
                     <Badge variant={overdue ? 'danger' : i.paid ? 'success' : 'default'}>{i.recurring}</Badge>
-                    <span className="text-[10px] text-forest/35">{i.due_date}</span>
-                    {(i as any).added_by && <span className="text-[10px] text-forest/30">oleh {(i as any).added_by}</span>}
+                    <span className="text-[10px] text-forest/60">{i.due_date}</span>
+                    {(i as any).added_by && <span className="text-[10px] text-forest/60">oleh {(i as any).added_by}</span>}
                     <span className={`text-sm font-bold ${i.paid ? 'text-emerald-500 line-through' : 'text-forest'}`}>{fmt(i.amount)}</span>
                   </div>
                 </div>

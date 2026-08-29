@@ -113,7 +113,7 @@ export default function Plans() {
             key={f}
             onClick={() => setFilter(f)}
             className={`flex-1 rounded-lg py-1.5 font-semibold capitalize transition ${
-              filter === f ? 'bg-white text-forest shadow-sm' : 'text-forest/50 hover:text-forest'
+              filter === f ? 'bg-white text-forest shadow-sm' : 'text-forest/60 hover:text-forest'
             }`}
           >
             {f}
@@ -133,7 +133,7 @@ export default function Plans() {
           />
           <div className="grid grid-cols-2 gap-3">
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">
                 Tanggal Rencana
               </span>
               <input
@@ -162,7 +162,7 @@ export default function Plans() {
               onChange={set('budget')}
             />
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">
                 Ditambahkan oleh
               </span>
               <select
@@ -232,9 +232,9 @@ export default function Plans() {
                     <p
                       className={`text-sm font-semibold truncate ${
                         i.status === 'selesai'
-                          ? 'line-through text-forest/50'
+                          ? 'line-through text-forest/60'
                           : i.status === 'dibatalkan'
-                          ? 'line-through text-forest/40'
+                          ? 'line-through text-forest/65'
                           : 'text-forest'
                       }`}
                     >
@@ -243,7 +243,7 @@ export default function Plans() {
                     <Badge variant={badgeVariant as any}>{i.status}</Badge>
                   </div>
 
-                  <div className="mt-2 space-y-1 text-xs text-forest/60">
+                  <div className="mt-2 space-y-1 text-xs text-forest/75">
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                       <span>🗓 {i.date}</span>
                       {i.location && <span>📍 {i.location}</span>}
@@ -252,7 +252,7 @@ export default function Plans() {
                       )}
                     </div>
                     {i.description && (
-                      <p className="text-forest/50 italic text-[11px] break-words">{i.description}</p>
+                      <p className="text-forest/60 italic text-[11px] break-words">{i.description}</p>
                     )}
                   </div>
                 </div>

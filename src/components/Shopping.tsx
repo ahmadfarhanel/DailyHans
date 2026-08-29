@@ -45,7 +45,7 @@ export default function Shopping() {
           <div className="grid grid-cols-2 gap-3">
             <Input label="Qty" value={values.quantity} onChange={set('quantity')} />
             <label className="block">
-              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/50">Kategori</span>
+              <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-forest/60">Kategori</span>
               <select value={values.category} onChange={e => setValues({ ...values, category: e.target.value })}
                 className="w-full rounded-xl border border-forest/12 bg-white px-4 py-2.5 text-sm outline-none focus:border-forest/40 focus:ring-2 focus:ring-forest/10">
                 {CATS.map(c => <option key={c.id} value={c.id}>{c.icon} {c.id}</option>)}
@@ -69,8 +69,8 @@ export default function Shopping() {
                 {i.bought && <svg className="h-3 w-3 text-cream" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
               </div>
               <div>
-                <p className={`text-sm font-medium transition ${i.bought ? 'text-forest/40 line-through' : 'text-forest'}`}>{i.name}</p>
-                <span className="text-xs text-forest/40">qty: {i.quantity}</span>
+                <p className={`text-sm font-medium transition ${i.bought ? 'text-forest/65 line-through' : 'text-forest'}`}>{i.name}</p>
+                <span className="text-xs text-forest/65">qty: {i.quantity}</span>
               </div>
             </label>
             <div className="flex items-center gap-1">

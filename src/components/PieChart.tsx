@@ -36,7 +36,7 @@ export default function PieChart({ data }: Props) {
 
   if (total === 0) {
     return (
-      <div className="flex items-center justify-center py-8 text-sm text-forest/40">
+      <div className="flex items-center justify-center py-8 text-sm text-forest/65">
         Belum ada data pengeluaran
       </div>
     )
@@ -72,7 +72,7 @@ export default function PieChart({ data }: Props) {
             <div className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: s.color }} />
             <div className="min-w-0 flex-1">
               <p className="text-xs font-medium text-forest truncate">{s.icon} {s.category}</p>
-              <p className="text-[10px] text-forest/50">{s.percent.toFixed(1)}%</p>
+              <p className="text-[10px] text-forest/60">{s.percent.toFixed(1)}%</p>
             </div>
           </div>
         ))}

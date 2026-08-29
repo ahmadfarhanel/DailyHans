@@ -54,46 +54,72 @@ export default function Dashboard({ onNavigate }: Props) {
   const activity = [
     ...expenses.slice(0, 3).map(item => ({ id: `e-${item.id}`, icon: '💸', title: item.description || item.category, meta: 'Pengeluaran', value: fmt(item.amount), tone: 'text-red-500' })),
     ...income.slice(0, 2).map((item: any) => ({ id: `i-${item.id}`, icon: '📈', title: item.description || item.source, meta: 'Pemasukan', value: `+${fmt(item.amount)}`, tone: 'text-emerald-500' })),
-    ...chores.filter(item => item.done).slice(0, 2).map(item => ({ id: `c-${item.id}`, icon: '✅', title: item.title, meta: 'Tugas selesai', value: 'Done', tone: 'text-forest/45' })),
+    ...chores.filter(item => item.done).slice(0, 2).map(item => ({ id: `c-${item.id}`, icon: '✅', title: item.title, meta: 'Tugas selesai', value: 'Done', tone: 'text-forest/65' })),
   ].slice(0, 6)
 
   return (
     <div className="space-y-6">
-      <section className="relative overflow-hidden rounded-[2rem] border border-forest/15 bg-gradient-to-br from-[#31182a] via-[#1c1221] to-[#0b0910] p-5 shadow-2xl shadow-forest/10 sm:p-7">
-        <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-forest/25 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 left-6 h-40 w-40 rounded-full bg-gold/20 blur-3xl" />
-        <div className="relative">
-          <p className="text-xs font-bold uppercase tracking-[0.24em] text-forest/60">DailyKaoAyy Home</p>
-          <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div className="min-w-0">
-              <h1 className="text-2xl font-black tracking-tight text-forest sm:text-3xl">Ringkasan Rumah Hari Ini</h1>
-              <p className="mt-1 max-w-xl text-sm leading-relaxed text-forest/58">Keuangan, tugas, belanja, dan wedding planner tetap rapi dalam satu dashboard.</p>
-            </div>
+      <section className="animate-fade-up grid gap-4 lg:grid-cols-[1.35fr_0.9fr]">
+        <div className="relative overflow-hidden rounded-[2rem] border border-forest/10 bg-gradient-to-br from-[#2a171f] via-[#16131a] to-[#0b0a0f] p-5 shadow-[0_30px_80px_rgba(0,0,0,0.22)] sm:p-7">
+          <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-gold/12 blur-3xl animate-float-slow" />
+          <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white/5 blur-3xl animate-float-slow" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/8 to-transparent animate-sheen" />
+          <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-forest/75">DailyKaoAyy Home</p>
+          <div className="mt-3 max-w-xl">
+            <h1 className="text-3xl font-black tracking-tight text-forest sm:text-4xl">Ringkasan Rumah Hari Ini</h1>
+            <p className="mt-2 text-sm leading-relaxed text-forest/75">Keuangan, tugas, belanja, dan wedding planner tetap rapi dalam satu tampilan yang tenang dan premium.</p>
           </div>
-
-          <div className="mt-6 rounded-3xl border border-forest/12 bg-cream/55 p-4 backdrop-blur sm:p-5">
+          <div className="mt-6 rounded-[1.75rem] border border-forest/15 bg-[#111116]/95 p-4 shadow-inner shadow-black/30 backdrop-blur-sm sm:p-5">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="text-xs text-forest/50">Sisa saldo aman</p>
-                <p className={`mt-1 max-w-full break-words text-[clamp(1.45rem,8vw,2.25rem)] font-black leading-tight tracking-tight ${balance >= 0 ? 'text-forest' : 'text-red-500'}`}>{fmt(balance)}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.18em] text-forest/65">Sisa saldo aman</p>
+                <p className={`mt-2 max-w-full break-words text-[clamp(1.6rem,8vw,2.7rem)] font-black leading-none tracking-tight ${balance >= 0 ? 'text-forest' : 'text-red-500'}`}>{fmt(balance)}</p>
               </div>
-              <span className={`rounded-full px-3 py-1 text-xs font-bold ${balance >= 0 ? 'bg-forest/12 text-forest' : 'bg-red-50 text-red-500'}`}>{balance >= 0 ? 'Aman' : 'Minus'}</span>
+              <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${balance >= 0 ? 'bg-forest/10 text-forest' : 'bg-red-50 text-red-500'}`}>{balance >= 0 ? 'Aman' : 'Minus'}</span>
             </div>
-            <div className="mt-4 h-3 overflow-hidden rounded-full bg-forest/10">
-              <div className="h-full rounded-full bg-gradient-to-r from-red-400 via-gold to-forest" style={{ width: `${usedPercent}%` }} />
+            <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-forest/10">
+              <div className="h-full rounded-full bg-gradient-to-r from-gold via-forest to-forest-light" style={{ width: `${usedPercent}%` }} />
             </div>
-            <div className="mt-2 flex justify-between text-[10px] text-forest/42">
+            <div className="mt-2 flex justify-between text-[10px] text-forest/65">
               <span>Terpakai {usedPercent}%</span>
               <span>Sisa {fmt(safeBalance)}</span>
             </div>
           </div>
         </div>
+
+        <div className="grid gap-4">
+          <button onClick={() => onNavigate('savings')} className="relative overflow-hidden rounded-[2rem] border border-[#c4b5fd]/30 bg-[#16111d] p-5 text-left shadow-[0_24px_60px_rgba(79,70,229,0.14)] transition active:scale-[0.99]">
+            <span className="pointer-events-none absolute -right-4 -top-6 text-7xl opacity-10">💎</span>
+            <span className="relative flex items-start gap-3">
+              <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-[#c4b5fd]/25 bg-[#8b5cf6]/18 text-2xl">💎</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-sm font-black text-[#f5f3ff]">Target Tabungan</span>
+                <span className="mt-0.5 block text-xs text-[#ddd6fe]/70">Dana aman, terpisah dari sisa saldo</span>
+              </span>
+              <span className="shrink-0 text-right">
+                <span className="block text-base font-black text-[#e9d5ff]">{fmt(savingsTotal)}</span>
+                <span className="text-[10px] font-semibold text-[#ddd6fe]/55">Buka target ›</span>
+              </span>
+            </span>
+            <span className="relative mt-4 block h-1.5 overflow-hidden rounded-full bg-black/25"><span className="block h-full rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#e9d5ff]" style={{ width: `${savingsTarget ? Math.min(100, Math.round(savingsTotal / savingsTarget * 100)) : 0}%` }} /></span>
+            <span className="relative mt-2 flex justify-between text-[10px] text-[#ddd6fe]/55"><span>{savingsTarget ? `Target ${fmt(savingsTarget)}` : 'Buat target pertamamu'}</span><span>{savingsTarget ? `${Math.min(100, Math.round(savingsTotal / savingsTarget * 100))}%` : ''}</span></span>
+          </button>
+
+          <div className="grid grid-cols-3 gap-3">
+            <MiniStat icon="✅" value={`${choresDone}/${chores.length}`} label="Tugas" onClick={() => onNavigate('chores')} />
+            <MiniStat icon="🛒" value={`${shoppingBought}/${shopping.length}`} label="Belanja" onClick={() => onNavigate('shopping')} />
+            <MiniStat icon="🗺️" value={String(upcomingPlans)} label="Rencana" onClick={() => onNavigate('plans')} />
+          </div>
+        </div>
       </section>
 
       <section>
-        <div className="mb-3 flex items-center justify-between">
-          <div><p className="text-xs font-bold uppercase tracking-[.18em] text-forest/50">Keuangan</p><h2 className="mt-0.5 text-lg font-black text-forest">Ringkasan saldo</h2></div>
-          <span className="rounded-full bg-forest/8 px-3 py-1 text-[11px] font-semibold text-forest/65">Total saat ini</span>
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-forest/65">Keuangan</p>
+            <h2 className="mt-1 text-xl font-black tracking-tight text-forest">Snapshot saldo</h2>
+          </div>
+          <span className="rounded-full border border-forest/10 bg-[#1c1921] px-3 py-1 text-[11px] font-semibold text-forest/75">Total saat ini</span>
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Metric icon="📈" label="Total pemasukan" value={fmt(incomeTotal)} tone="text-emerald-500" surface="bg-emerald-50 border-emerald-200" />
@@ -101,35 +127,22 @@ export default function Dashboard({ onNavigate }: Props) {
           <Metric icon="📋" label="Tagihan belum bayar" value={fmt(billUnpaid)} tone="text-gold" surface="bg-amber-50 border-amber-200" />
           <Metric icon="💰" label="Sisa saldo" value={fmt(balance)} tone={balance >= 0 ? 'text-forest' : 'text-red-500'} surface={balance >= 0 ? 'bg-forest/8 border-forest/20' : 'bg-red-50 border-red-200'} />
         </div>
-        <button onClick={() => onNavigate('savings')} className="relative mt-3 w-full overflow-hidden rounded-3xl border border-[#c4b5fd]/30 bg-[#15101d] p-4 text-left shadow-xl shadow-[#8b5cf6]/15 transition hover:border-[#c4b5fd]/55 active:scale-[0.99]">
-          <span className="pointer-events-none absolute -right-3 -top-5 text-7xl opacity-10">💎</span><span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_90%_0%,rgba(196,181,253,.16),transparent_40%)]" />
-          <span className="relative flex items-center gap-3"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-[#c4b5fd]/25 bg-[#8b5cf6]/20 text-2xl">💎</span><span className="min-w-0 flex-1"><span className="block text-sm font-black text-[#f5f3ff]">Target Tabungan</span><span className="mt-0.5 block text-xs text-[#ddd6fe]/70">Dana aman, terpisah dari sisa saldo</span></span><span className="shrink-0 text-right"><span className="block text-base font-black text-[#e9d5ff]">{fmt(savingsTotal)}</span><span className="text-[10px] font-semibold text-[#ddd6fe]/55">Buka target ›</span></span></span>
-          <span className="relative mt-3 block h-1.5 overflow-hidden rounded-full bg-black/25"><span className="block h-full rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#e9d5ff]" style={{ width: `${savingsTarget ? Math.min(100, Math.round(savingsTotal / savingsTarget * 100)) : 0}%` }} /></span>
-          <span className="relative mt-1.5 flex justify-between text-[10px] text-[#ddd6fe]/55"><span>{savingsTarget ? `Target ${fmt(savingsTarget)}` : 'Buat target pertamamu'}</span><span>{savingsTarget ? `${Math.min(100, Math.round(savingsTotal / savingsTarget * 100))}%` : ''}</span></span>
-        </button>
-        <p className="mt-2 text-[11px] text-forest/45">Total pemasukan tetap utuh. Tabungan hanya mengurangi sisa saldo yang bisa dipakai.</p>
       </section>
 
-      <Card title="Aksi Cepat" icon="⚡">
+      <Card title="Aksi Cepat" icon="⚡" className="shadow-[0_18px_50px_rgba(0,0,0,0.05)]">
         <div className="grid gap-3 sm:grid-cols-2">
           {actions.map(action => (
-            <button key={action.tab} onClick={() => onNavigate(action.tab)} className="group flex items-center gap-3 rounded-2xl border border-forest/10 bg-cream/70 p-3 text-left transition hover:border-forest/25 hover:bg-cream-dark active:scale-[0.99]">
-              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-forest/10 text-xl transition group-hover:bg-forest/15">{action.icon}</span>
+            <button key={action.tab} onClick={() => onNavigate(action.tab)} className="group flex items-center gap-3 rounded-2xl border border-forest/10 bg-cream/70 p-3 text-left transition hover:border-gold/30 hover:bg-cream-dark active:scale-[0.99]">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-forest/10 text-xl transition group-hover:bg-gold/15">{action.icon}</span>
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-bold text-forest">{action.label}</span>
-                <span className="mt-0.5 block truncate text-[11px] text-forest/45">{action.sub}</span>
+                <span className="mt-0.5 block truncate text-[11px] text-forest/65">{action.sub}</span>
               </span>
-              <span className="text-forest/35">›</span>
+              <span className="text-forest/60">›</span>
             </button>
           ))}
         </div>
       </Card>
-
-      <div className="grid grid-cols-3 gap-3">
-        <MiniStat icon="✅" value={`${choresDone}/${chores.length}`} label="Tugas" onClick={() => onNavigate('chores')} />
-        <MiniStat icon="🛒" value={`${shoppingBought}/${shopping.length}`} label="Belanja" onClick={() => onNavigate('shopping')} />
-        <MiniStat icon="🗺️" value={String(upcomingPlans)} label="Rencana" onClick={() => onNavigate('plans')} />
-      </div>
 
       <Card title="Aktivitas Terbaru" icon="🕐">
         <div className="max-h-[24rem] space-y-2.5 overflow-y-auto pr-1">
@@ -138,12 +151,12 @@ export default function Dashboard({ onNavigate }: Props) {
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-forest/8 text-base">{item.icon}</span>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-forest">{item.title}</p>
-                <p className="text-[10px] text-forest/40">{item.meta}</p>
+                <p className="text-[10px] text-forest/65">{item.meta}</p>
               </div>
               <span className={`shrink-0 text-xs font-bold ${item.tone}`}>{item.value}</span>
             </div>
           ))}
-          {!activity.length && <p className="py-8 text-center text-sm text-forest/40">Belum ada aktivitas. Mulai dari scan struk atau tambah pemasukan.</p>}
+          {!activity.length && <p className="py-8 text-center text-sm text-forest/65">Belum ada aktivitas. Mulai dari scan struk atau tambah pemasukan.</p>}
         </div>
       </Card>
 
@@ -161,16 +174,19 @@ export default function Dashboard({ onNavigate }: Props) {
 }
 
 function Metric({ icon, label, value, tone, surface }: { icon: string; label: string; value: string; tone: string; surface: string }) {
-  return <div className={`min-w-0 rounded-3xl border p-3 shadow-lg shadow-forest/5 sm:p-4 ${surface}`}>
-    <div className="flex items-start gap-2"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-black/10 text-base">{icon}</span><span className="pt-0.5 text-[11px] font-bold leading-tight text-forest/70 sm:text-xs">{label}</span></div>
+  return <div className={`min-w-0 rounded-[1.5rem] border p-3.5 shadow-sm ${surface}`}>
+    <div className="flex items-start gap-2">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-black/10 text-base">{icon}</span>
+      <span className="pt-0.5 text-[11px] font-bold leading-tight text-forest/70 sm:text-xs">{label}</span>
+    </div>
     <p className={`mt-3 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-[clamp(.8rem,3.5vw,1.125rem)] font-black tracking-tight ${tone}`} title={value}>{value}</p>
   </div>
 }
 
 function MiniStat({ icon, value, label, onClick }: { icon: string; value: string; label: string; onClick: () => void }) {
-  return <button onClick={onClick} className="min-w-0 rounded-3xl border border-forest/10 bg-white/80 p-3 text-left shadow-lg shadow-forest/5 transition active:scale-[0.98]">
+  return <button onClick={onClick} className="min-w-0 rounded-[1.5rem] border border-forest/10 bg-white/80 p-3 text-left shadow-sm transition active:scale-[0.98]">
     <span className="text-xl">{icon}</span>
     <p className="mt-2 truncate text-lg font-black text-forest">{value}</p>
-    <p className="truncate text-[10px] text-forest/45">{label}</p>
+    <p className="truncate text-[10px] text-forest/65">{label}</p>
   </button>
 }
