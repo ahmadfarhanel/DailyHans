@@ -3,23 +3,23 @@
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
-  --color-cream: #24131d;
-  --color-cream-dark: #130b11;
-  --color-forest: #fff1f6;
+  --color-cream: #3a1528;
+  --color-cream-dark: #220d17;
+  --color-forest: #fff4f8;
   --color-forest-light: #ffffff;
-  --color-forest-dark: #ffd6e5;
-  --color-gold: #e7a0bb;
-  --color-gold-light: #f7c6d8;
+  --color-forest-dark: #ffdbe8;
+  --color-gold: #f29ac0;
+  --color-gold-light: #ffc6dd;
 }
 
 @layer utilities {
-  .bg-white { background-color: #311b27 !important; }
-  .bg-white\/80 { background-color: rgb(49 27 39 / .88) !important; }
-  .bg-white\/90 { background-color: rgb(49 27 39 / .96) !important; }
+  .bg-white { background-color: #4a1b33 !important; }
+  .bg-white\/80 { background-color: rgb(74 27 51 / .88) !important; }
+  .bg-white\/90 { background-color: rgb(74 27 51 / .96) !important; }
 
-  .bg-red-50 { background-color: #401823 !important; }
-  .bg-red-100\/50 { background-color: rgb(64 24 35 / .65) !important; }
-  .bg-amber-50 { background-color: #3a2530 !important; }
+  .bg-red-50 { background-color: #5a2038 !important; }
+  .bg-red-100\/50 { background-color: rgb(90 32 56 / .65) !important; }
+  .bg-amber-50 { background-color: #5a2942 !important; }
   .bg-sky-50, .bg-blue-50 { background-color: #22233a !important; }
   .bg-emerald-50 { background-color: #18352d !important; }
 
@@ -36,9 +36,9 @@
 
 body {
   background:
-    radial-gradient(circle at top left, rgb(231 160 187 / .13), transparent 25rem),
-    radial-gradient(circle at bottom right, rgb(126 38 70 / .18), transparent 24rem),
-    #130b11;
+    radial-gradient(circle at top left, rgb(255 196 220 / .22), transparent 26rem),
+    radial-gradient(circle at bottom right, rgb(122 19 58 / .28), transparent 24rem),
+    #220d17;
   scroll-behavior: smooth;
 }
 
