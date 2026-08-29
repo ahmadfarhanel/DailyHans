@@ -14,6 +14,7 @@ export default function Savings() {
   const [deposit, setDeposit] = useState({ goalId: '', amount: '', note: '' })
   const [error, setError] = useState('')
   const [editing, setEditing] = useState<Goal | null>(null)
+  const [editingDeposit, setEditingDeposit] = useState<Deposit | null>(null)
   const load = async () => {
     const [{ data: goalsData, error: goalsError }, { data: depositsData, error: depositsError }] = await Promise.all([
       supabase.from('savings_goals').select('*').order('created_at'),
@@ -36,6 +37,30 @@ export default function Savings() {
     const { error: updateError } = await supabase.from('savings_goals').update({ name: values.name.trim(), target_amount: Number(values.target_amount), target_date: values.target_date || null }).eq('id', editing.id)
     if (updateError) return setError(updateError.message)
     setEditing(null); await load()
+  }
+  const removeGoal = async (id: string) => {
+    if (!window.confirm('Hapus target ini beserta setoran terkait?')) return
+    const { error: depositsError } = await supabase.from('savings_deposits').delete().eq('goal_id', id)
+    if (depositsError) return setError(depositsError.message)
+    const { error: deleteError } = await supabase.from('savings_goals').delete().eq('id', id)
+    if (deleteError) return setError(deleteError.message)
+    if (editing?.id === id) setEditing(null)
+    await load()
+  }
+  const saveDeposit = async (values: Record<string, string>) => {
+    if (!editingDeposit) return
+    const amount = Number(values.amount)
+    if (!amount) return setError('Nominal setoran wajib diisi.')
+    const { error: updateError } = await supabase.from('savings_deposits').update({ amount, note: values.note || '', deposited_at: values.deposited_at || editingDeposit.deposited_at }).eq('id', editingDeposit.id)
+    if (updateError) return setError(updateError.message)
+    setEditingDeposit(null)
+    await load()
+  }
+  const removeDeposit = async (id: string) => {
+    if (!window.confirm('Hapus setoran ini?')) return
+    const { error: deleteError } = await supabase.from('savings_deposits').delete().eq('id', id)
+    if (deleteError) return setError(deleteError.message)
+    await load()
   }
   const addDeposit = async () => {
     if (!deposit.goalId || !Number(deposit.amount)) return setError('Pilih target dan isi nominal setoran.')
@@ -62,7 +87,14 @@ export default function Savings() {
     </section>
     {error && <p className="rounded-xl border border-red-400/30 bg-[#2a121d] p-3 text-sm text-[#fda4af]">{error}</p>}
 
-    <section><div className="mb-3 flex items-end justify-between"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-forest/50">Progress</p><h2 className="mt-1 text-xl font-black text-forest">Target aktif</h2></div><span className="text-xs text-forest/55">{goals.length} target</span></div><div className="space-y-3">{goals.map(item => { const saved = savedFor(item.id); const progress = Math.min(100, Math.round(saved / Number(item.target_amount) * 100)); return <article key={item.id} className="rounded-3xl border border-[#a78bfa]/20 bg-[#171421] p-4 shadow-lg shadow-black/15 sm:p-5"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="truncate text-base font-black text-[#f5f3ff]">🎯 {item.name}</h3><p className="mt-1 text-xs text-[#ddd6fe]/70">Terkumpul <b className="text-[#f5f3ff]">{fmt(saved)}</b> dari {fmt(item.target_amount)}</p>{item.target_date && <p className="mt-1 text-[11px] text-[#ddd6fe]/55">Target selesai: {item.target_date}</p>}</div><div className="shrink-0 text-right"><span className="block rounded-full bg-[#8b5cf6]/25 px-3 py-1.5 text-sm font-black text-[#e9d5ff]">{progress}%</span><button type="button" onClick={() => setEditing(item)} className="mt-2 rounded-lg px-2 py-1 text-xs font-semibold text-[#d8b4fe] hover:bg-white/5">Edit</button></div></div><div className="mt-4 h-3 overflow-hidden rounded-full bg-[#0f0c18]"><div className="h-full rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#d8b4fe]" style={{ width: `${progress}%` }} /></div><div className="mt-2 flex justify-between text-[11px] text-[#ddd6fe]/60"><span>Sisa {fmt(Math.max(0, Number(item.target_amount) - saved))}</span><span>{progress === 100 ? 'Target tercapai ✓' : 'Lanjut menabung'}</span></div></article> })}{!goals.length && <p className="rounded-3xl border border-dashed border-[#a78bfa]/25 bg-[#171421]/60 py-12 text-center text-sm text-[#ddd6fe]/60">Belum ada target budget. Buat target pertama di atas.</p>}</div></section>
+    <section><div className="mb-3 flex items-end justify-between"><div><p className="text-xs font-bold uppercase tracking-[.18em] text-forest/50">Progress</p><h2 className="mt-1 text-xl font-black text-forest">Target aktif</h2></div><span className="text-xs text-forest/55">{goals.length} target</span></div><div className="max-h-[56rem] space-y-3 overflow-y-auto pr-1">{goals.map(item => { const saved = savedFor(item.id); const progress = Math.min(100, Math.round(saved / Number(item.target_amount) * 100)); return <article key={item.id} className="rounded-3xl border border-[#a78bfa]/20 bg-[#171421] p-4 shadow-lg shadow-black/15 sm:p-5"><div className="flex items-start justify-between gap-3"><div className="min-w-0"><h3 className="truncate text-base font-black text-[#f5f3ff]">🎯 {item.name}</h3><p className="mt-1 text-xs text-[#ddd6fe]/70">Terkumpul <b className="text-[#f5f3ff]">{fmt(saved)}</b> dari {fmt(item.target_amount)}</p>{item.target_date && <p className="mt-1 text-[11px] text-[#ddd6fe]/55">Target selesai: {item.target_date}</p>}</div><div className="shrink-0 text-right"><span className="block rounded-full bg-[#8b5cf6]/25 px-3 py-1.5 text-sm font-black text-[#e9d5ff]">{progress}%</span><div className="mt-2 flex flex-wrap justify-end gap-2"><button type="button" onClick={() => setEditing(item)} className="rounded-lg px-2 py-1 text-xs font-semibold text-[#d8b4fe] hover:bg-white/5">Edit target</button><button type="button" onClick={() => void removeGoal(item.id)} className="rounded-lg px-2 py-1 text-xs font-semibold text-[#fda4af] hover:bg-[#2a121d]">Hapus</button></div></div></div><div className="mt-4 h-3 overflow-hidden rounded-full bg-[#0f0c18]"><div className="h-full rounded-full bg-gradient-to-r from-[#8b5cf6] to-[#d8b4fe]" style={{ width: `${progress}%` }} /></div><div className="mt-2 flex justify-between text-[11px] text-[#ddd6fe]/60"><span>Sisa {fmt(Math.max(0, Number(item.target_amount) - saved))}</span><span>{progress === 100 ? 'Target tercapai ✓' : 'Lanjut menabung'}</span></div><DepositHistory deposits={deposits.filter(depositItem => depositItem.goal_id === item.id)} onEdit={setEditingDeposit} onRemove={removeDeposit} /></article> })}{!goals.length && <p className="rounded-3xl border border-dashed border-[#a78bfa]/25 bg-[#171421]/60 py-12 text-center text-sm text-[#ddd6fe]/60">Belum ada target budget. Buat target pertama di atas.</p>}</div></section>
     {editing && <WeddingEditDialog title="Edit Target Budget" fields={[{ key: 'name', label: 'Nama target', value: editing.name }, { key: 'target_amount', label: 'Nominal target', value: String(editing.target_amount), type: 'number' }, { key: 'target_date', label: 'Target selesai', value: editing.target_date || '', type: 'date' }]} onClose={() => setEditing(null)} onSave={saveGoal} />}
+    {editingDeposit && <WeddingEditDialog title="Edit Setoran" fields={[{ key: 'amount', label: 'Nominal setoran', value: String(editingDeposit.amount), type: 'number' }, { key: 'note', label: 'Catatan', value: editingDeposit.note || '' }, { key: 'deposited_at', label: 'Tanggal setoran', value: editingDeposit.deposited_at.slice(0, 10), type: 'date' }]} onClose={() => setEditingDeposit(null)} onSave={saveDeposit} />}
   </div>
+}
+
+function DepositHistory({ deposits, onEdit, onRemove }: { deposits: Deposit[]; onEdit: (deposit: Deposit) => void; onRemove: (id: string) => void }) {
+  const [open, setOpen] = useState(false)
+  if (!deposits.length) return null
+  return <div className="mt-4 rounded-2xl border border-[#a78bfa]/15 bg-black/10 p-3"><button type="button" onClick={() => setOpen(value => !value)} className="flex w-full items-center justify-between text-left"><span className="text-[10px] font-bold uppercase tracking-[.18em] text-[#ddd6fe]/75">Riwayat setoran ({deposits.length})</span><span className="text-xs text-[#ddd6fe]/75">{open ? 'Tutup' : 'Lihat'}</span></button>{open && <div className="mt-2 max-h-72 space-y-2 overflow-y-auto pr-1">{deposits.map(item => <div key={item.id} className="flex items-start justify-between gap-3 rounded-xl border border-white/5 bg-[#100d18] px-3 py-2.5"><div className="min-w-0"><p className="truncate text-sm font-bold text-[#f5f3ff]">{fmt(Number(item.amount))}</p><p className="mt-0.5 text-[11px] leading-relaxed text-[#ddd6fe]/75">{item.note || 'Tanpa catatan'}</p><p className="mt-0.5 text-[10px] text-[#ddd6fe]/65">{new Date(item.deposited_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p></div><div className="flex shrink-0 gap-1"><button type="button" onClick={() => onEdit(item)} className="rounded-lg px-2 py-1 text-xs font-semibold text-[#d8b4fe] hover:bg-white/5">Edit</button><button type="button" onClick={() => onRemove(item.id)} className="rounded-lg px-2 py-1 text-xs font-semibold text-[#fda4af] hover:bg-[#2a121d]">Hapus</button></div></div>)}</div>}</div>
 }

@@ -24,23 +24,24 @@ export function CurrencyInput({ label = 'Jumlah (Rp)', value, onValueChange, ...
 
 export function Button({ variant = 'primary', size = 'md', className = '', ...props }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'ghost' | 'danger' | 'success'; size?: 'sm' | 'md' | 'lg' }) {
   const variants = {
-    primary: 'bg-forest text-cream shadow-[0_12px_30px_rgba(23,23,23,0.12)] hover:-translate-y-0.5 hover:bg-forest-light hover:shadow-[0_16px_36px_rgba(0,0,0,0.18)] active:translate-y-0 active:scale-[0.98]',
+    primary: 'bg-forest text-cream shadow-[0_12px_30px_rgba(126,38,70,0.18)] hover:-translate-y-0.5 hover:bg-forest-light hover:shadow-[0_16px_36px_rgba(126,38,70,0.24)] active:translate-y-0 active:scale-[0.98]',
     ghost: 'border border-forest/10 text-forest/80 hover:-translate-y-0.5 hover:border-gold/50 hover:text-forest bg-white/90',
-    danger: 'text-forest/65 hover:text-red-600 hover:bg-red-50',
+    danger: 'text-forest/55 hover:text-red-600 hover:bg-red-50',
     success: 'bg-gold/15 text-forest hover:bg-gold/20',
+
   }
   const sizes = {
     sm: 'px-2.5 py-1 text-xs',
     md: 'px-4 py-2 text-sm',
     lg: 'px-5 py-2.5 text-base',
   }
-    return <button {...props} className={`rounded-full font-medium transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`} />
+    return <button {...props} className={`rounded-full font-medium transition-all duration-150 will-change-transform disabled:opacity-40 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`} />
 
 }
 
 export function Card({ title, icon, children, className = '', onClick }: { title: string; icon?: string; children: React.ReactNode; className?: string; onClick?: (e: React.MouseEvent) => void }) {
   return (
-    <section onClick={onClick} className={`rounded-3xl border border-forest/10 bg-white/90 backdrop-blur-sm shadow-[0_18px_50px_rgba(23,23,23,0.06)] overflow-hidden transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_60px_rgba(0,0,0,0.12)] ${className}`}>
+    <section onClick={onClick} className={`rounded-3xl border border-forest/10 bg-white/90 shadow-[0_12px_34px_rgba(0,0,0,0.12)] overflow-hidden transition duration-200 will-change-transform hover:-translate-y-0.5 ${className}`}>
       <div className="flex items-center gap-2.5 border-b border-forest/8 bg-transparent px-5 py-4">
         {icon && <span className="text-lg">{icon}</span>}
         <h2 className="text-base font-semibold text-forest">{title}</h2>

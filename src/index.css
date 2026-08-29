@@ -3,28 +3,27 @@
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
-  /* Exclusive Minimal Dark Theme */
-  --color-cream: #121212;
-  --color-cream-dark: #0a0a0a;
-  --color-forest: #f3f4f6;
+  --color-cream: #24131d;
+  --color-cream-dark: #130b11;
+  --color-forest: #fff1f6;
   --color-forest-light: #ffffff;
-  --color-forest-dark: #e5e7eb;
-  --color-gold: #c3a168;
-  --color-gold-light: #e6dfcb;
+  --color-forest-dark: #ffd6e5;
+  --color-gold: #e7a0bb;
+  --color-gold-light: #f7c6d8;
 }
 
 @layer utilities {
-  .bg-white { background-color: #171717 !important; }
-  .bg-white\/80 { background-color: rgb(23 23 23 / .84) !important; }
-  .bg-white\/90 { background-color: rgb(23 23 23 / .94) !important; }
+  .bg-white { background-color: #311b27 !important; }
+  .bg-white\/80 { background-color: rgb(49 27 39 / .88) !important; }
+  .bg-white\/90 { background-color: rgb(49 27 39 / .96) !important; }
 
-  .bg-red-50 { background-color: #2e1515 !important; }
-  .bg-red-100\/50 { background-color: rgb(46 21 21 / .55) !important; }
-  .bg-amber-50 { background-color: #2b2216 !important; }
-  .bg-sky-50, .bg-blue-50 { background-color: #16202b !important; }
-  .bg-emerald-50 { background-color: #162b20 !important; }
+  .bg-red-50 { background-color: #401823 !important; }
+  .bg-red-100\/50 { background-color: rgb(64 24 35 / .65) !important; }
+  .bg-amber-50 { background-color: #3a2530 !important; }
+  .bg-sky-50, .bg-blue-50 { background-color: #22233a !important; }
+  .bg-emerald-50 { background-color: #18352d !important; }
 
-  .text-amber-700, .text-amber-800 { color: #c3a168 !important; }
+  .text-amber-700, .text-amber-800 { color: #f2b8cc !important; }
   .text-red-500, .text-red-600 { color: #f87171 !important; }
   .text-sky-600, .text-sky-700 { color: #60a5fa !important; }
   .text-emerald-500, .text-emerald-600, .text-emerald-700 { color: #34d399 !important; }
@@ -37,13 +36,18 @@
 
 body {
   background:
-    radial-gradient(circle at top left, rgb(195 161 104 / .08), transparent 28rem),
-    radial-gradient(circle at bottom right, rgb(255 255 255 / .03), transparent 26rem),
-    #0a0a0a;
+    radial-gradient(circle at top left, rgb(231 160 187 / .13), transparent 25rem),
+    radial-gradient(circle at bottom right, rgb(126 38 70 / .18), transparent 24rem),
+    #130b11;
+  scroll-behavior: smooth;
 }
 
-::selection { background: #c3a168; color: #0a0a0a; }
+::selection { background: #e7a0bb; color: #130b11; }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9) sepia(0.2) saturate(0.6) hue-rotate(10deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
 
 @keyframes float-slow {
   0%, 100% { transform: translate3d(0, 0, 0); }

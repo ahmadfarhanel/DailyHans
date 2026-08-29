@@ -59,14 +59,14 @@ export default function Dashboard({ onNavigate }: Props) {
 
   return (
     <div className="space-y-6">
-      <section className="animate-fade-up grid gap-4 lg:grid-cols-[1.35fr_0.9fr]">
-        <div className="relative overflow-hidden rounded-[2rem] border border-forest/10 bg-gradient-to-br from-[#2a171f] via-[#16131a] to-[#0b0a0f] p-5 shadow-[0_30px_80px_rgba(0,0,0,0.22)] sm:p-7">
-          <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-gold/12 blur-3xl animate-float-slow" />
-          <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white/5 blur-3xl animate-float-slow" />
+      <section className="animate-fade-up grid gap-3 sm:gap-4 lg:grid-cols-[1.35fr_0.9fr]">
+        <div className="relative overflow-hidden rounded-[2rem] border border-forest/10 bg-gradient-to-br from-[#3a1a2c] via-[#25121d] to-[#130b11] p-4 shadow-[0_30px_80px_rgba(126,38,70,0.18)] sm:p-7">
+          <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-gold/12 blur-2xl animate-float-slow" />
+          <div className="pointer-events-none absolute -left-10 bottom-0 h-40 w-40 rounded-full bg-white/5 blur-2xl animate-float-slow" />
           <div className="pointer-events-none absolute inset-y-0 left-0 w-1/2 -skew-x-12 bg-gradient-to-r from-transparent via-white/8 to-transparent animate-sheen" />
           <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-forest/75">DailyKaoAyy Home</p>
           <div className="mt-3 max-w-xl">
-            <h1 className="text-3xl font-black tracking-tight text-forest sm:text-4xl">Ringkasan Rumah Hari Ini</h1>
+            <h1 className="text-[1.7rem] font-black leading-tight tracking-tight text-forest sm:text-4xl">Ringkasan Rumah Hari Ini</h1>
             <p className="mt-2 text-sm leading-relaxed text-forest/75">Keuangan, tugas, belanja, dan wedding planner tetap rapi dalam satu tampilan yang tenang dan premium.</p>
           </div>
           <div className="mt-6 rounded-[1.75rem] border border-forest/15 bg-[#111116]/95 p-4 shadow-inner shadow-black/30 backdrop-blur-sm sm:p-5">
