@@ -27,8 +27,14 @@ export function useAuth() {
       if (data.session) setSession(data.session)
     }).catch(() => {})
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_, s) => {
-      setSession(s)
+    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
+      if (s) {
+        setSession(s)
+        return
+      }
+      if (event === 'SIGNED_OUT') {
+        setSession(null)
+      }
     })
     return () => sub.subscription.unsubscribe()
   }, [])
