@@ -3,54 +3,54 @@
 @theme {
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
 
-  /* Soft BlackPink theme: black base, rose accent, low eye strain */
-  --color-cream: #120d14;
-  --color-cream-dark: #09070b;
-  --color-forest: #f7b2d9;
-  --color-forest-light: #f062ad;
-  --color-forest-dark: #8f2d63;
-  --color-gold: #c77dff;
-  --color-gold-light: #f0abfc;
+  /* Exclusive Minimal Dark Theme */
+  --color-cream: #121212;
+  --color-cream-dark: #0a0a0a;
+  --color-forest: #f3f4f6;
+  --color-forest-light: #ffffff;
+  --color-forest-dark: #e5e7eb;
+  --color-gold: #c3a168;
+  --color-gold-light: #e6dfcb;
 }
 
 @layer utilities {
-  .bg-white { background-color: #1b141f !important; }
-  .bg-white\/80 { background-color: rgb(27 20 31 / .82) !important; }
-  .bg-white\/90 { background-color: rgb(27 20 31 / .92) !important; }
+  .bg-white { background-color: #171717 !important; }
+  .bg-white\/80 { background-color: rgb(23 23 23 / .84) !important; }
+  .bg-white\/90 { background-color: rgb(23 23 23 / .94) !important; }
 
-  .bg-red-50 { background-color: #2a121d !important; }
-  .bg-red-100\/50 { background-color: rgb(74 20 45 / .5) !important; }
-  .bg-amber-50 { background-color: #25182a !important; }
-  .bg-sky-50, .bg-blue-50 { background-color: #171427 !important; }
-  .bg-emerald-50 { background-color: #10251e !important; }
+  .bg-red-50 { background-color: #2e1515 !important; }
+  .bg-red-100\/50 { background-color: rgb(46 21 21 / .55) !important; }
+  .bg-amber-50 { background-color: #2b2216 !important; }
+  .bg-sky-50, .bg-blue-50 { background-color: #16202b !important; }
+  .bg-emerald-50 { background-color: #162b20 !important; }
 
-  .text-amber-700, .text-amber-800 { color: #f0abfc !important; }
-  .text-red-500, .text-red-600 { color: #fb7185 !important; }
-  .text-sky-600, .text-sky-700 { color: #c4b5fd !important; }
-  .text-emerald-500, .text-emerald-600, .text-emerald-700 { color: #86efac !important; }
+  .text-amber-700, .text-amber-800 { color: #c3a168 !important; }
+  .text-red-500, .text-red-600 { color: #f87171 !important; }
+  .text-sky-600, .text-sky-700 { color: #60a5fa !important; }
+  .text-emerald-500, .text-emerald-600, .text-emerald-700 { color: #34d399 !important; }
 
-  .border-red-200 { border-color: rgb(251 113 133 / .32) !important; }
-  .border-amber-200 { border-color: rgb(240 171 252 / .28) !important; }
-  .border-sky-200, .border-blue-200 { border-color: rgb(196 181 253 / .28) !important; }
-  .border-emerald-200 { border-color: rgb(134 239 172 / .25) !important; }
+  .border-red-200 { border-color: rgb(248 113 113 / .18) !important; }
+  .border-amber-200 { border-color: rgb(195 161 104 / .18) !important; }
+  .border-sky-200, .border-blue-200 { border-color: rgb(96 165 250 / .18) !important; }
+  .border-emerald-200 { border-color: rgb(52 211 153 / .18) !important; }
 }
 
 body {
   background:
-    radial-gradient(circle at top left, rgb(240 98 173 / .14), transparent 28rem),
-    radial-gradient(circle at bottom right, rgb(199 125 255 / .10), transparent 24rem),
-    #09070b;
+    radial-gradient(circle at top left, rgb(195 161 104 / .08), transparent 28rem),
+    radial-gradient(circle at bottom right, rgb(255 255 255 / .03), transparent 26rem),
+    #0a0a0a;
 }
 
-::selection { background: #f062ad; color: #09070b; }
-input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) sepia(1) saturate(3) hue-rotate(285deg); }
+::selection { background: #c3a168; color: #0a0a0a; }
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9) sepia(0.2) saturate(0.6) hue-rotate(10deg); }
 
 /* Native select stays accessible; custom arrow and touch target improve mobile. */
 select {
   appearance: none;
   min-height: 44px;
   padding-right: 2.75rem !important;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f7b2d9' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23f3f4f6' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-position: right 0.9rem center;
   background-repeat: no-repeat;
   background-size: 1rem;
@@ -58,8 +58,8 @@ select {
 }
 
 select option {
-  background: #1b141f;
-  color: #f7b2d9;
+  background: #171717;
+  color: #f3f4f6;
 }
 
 @media (max-width: 640px) {
